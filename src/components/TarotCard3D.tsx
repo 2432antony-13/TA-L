@@ -56,16 +56,11 @@ export function TarotCard3D({
                     draggable={false}
                 />
                 {isCenter && (
-                    <motion.div
-                        className="absolute inset-0 border border-neon-gold/40 rounded-xl pointer-events-none"
-                        animate={{
-                            boxShadow: [
-                                'inset 0 0 20px rgba(255, 215, 0, 0.1)',
-                                'inset 0 0 30px rgba(255, 215, 0, 0.2)',
-                                'inset 0 0 20px rgba(255, 215, 0, 0.1)',
-                            ],
+                    <div
+                        className="absolute inset-0 border border-neon-gold/40 rounded-xl pointer-events-none animate-glow-pulse"
+                        style={{
+                            willChange: 'box-shadow',
                         }}
-                        transition={{ duration: 2, repeat: Infinity }}
                     />
                 )}
             </motion.div>

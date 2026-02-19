@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>塔罗叙事 - 项目可视化总结</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: rgba(25, 25, 35, 0.8);
+            --text-primary: #f0f0f5;
+            --text-secondary: #a0a0b0;
+            --accent-gold: #ffd700;
+            --accent-purple: #8b5cf6;
+            --accent-blue: #3b82f6;
+            --accent-pink: #ec4899;
+            --accent-green: #10b981;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .background-effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            top: -200px;
+            right: -200px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+            bottom: -100px;
+            left: -100px;
+            animation-delay: -7s;
+        }
+
+        .orb-3 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, var(--accent-gold), orange);
+            top: 50%;
+            left: 50%;
+            animation-delay: -14s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, -30px) scale(1.1); }
+            50% { transform: translate(-30px, 50px) scale(0.9); }
+            75% { transform: translate(-50px, -20px) scale(1.05); }
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 40px;
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .logo-container {
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 20px 50px rgba(139, 92, 246, 0.3);
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 20px 50px rgba(139, 92, 246, 0.3); }
+            50% { box-shadow: 0 25px 60px rgba(255, 215, 0, 0.4); }
+        }
+
+        .title {
+            font-size: 56px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -2px;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            font-weight: 400;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            margin-top: 8px;
+        }
+
+        .description {
+            max-width: 700px;
+            margin: 24px auto 0;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 32px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 215, 0, 0.3);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .section-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        /* Tech Stack */
+        .tech-section {
+            margin-bottom: 60px;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .tech-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 28px;
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .tech-card:hover {
+            transform: translateX(8px);
+            border-color: rgba(139, 92, 246, 0.4);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .tech-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .tech-icon.react { background: linear-gradient(135deg, #61dafb, #21a1f1); }
+        .tech-icon.typescript { background: linear-gradient(135deg, #3178c6, #235a97); }
+        .tech-icon.vite { background: linear-gradient(135deg, #646cff, #a855f7); }
+        .tech-icon.tailwind { background: linear-gradient(135deg, #38bdf8, #0ea5e9); }
+        .tech-icon.framer { background: linear-gradient(135deg, #ff0080, #7928ca); }
+        .tech-icon.zustand { background: linear-gradient(135deg, #f97316, #fb923c); }
+
+        .tech-info h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .tech-info p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .tech-version {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--accent-gold);
+            margin-top: 8px;
+            font-family: monospace;
+        }
+
+        /* Architecture Section */
+        .arch-section {
+            margin-bottom: 60px;
+        }
+
+        .arch-diagram {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 48px;
+            position: relative;
+        }
+
+        .arch-flow {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .arch-node {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px 32px;
+            text-align: center;
+            min-width: 160px;
+            transition: all 0.3s ease;
+        }
+
+        .arch-node:hover {
+            transform: scale(1.05);
+            border-color: var(--accent-gold);
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.15);
+        }
+
+        .arch-node-icon {
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+
+        .arch-node-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .arch-node-sub {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .arch-arrow {
+            font-size: 24px;
+            color: var(--accent-purple);
+            animation: arrow-pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes arrow-pulse {
+            0%, 100% { opacity: 0.5; transform: translateX(0); }
+            50% { opacity: 1; transform: translateX(4px); }
+        }
+
+        /* Features Section */
+        .features-section {
+            margin-bottom: 60px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 36px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--accent-purple) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s;
+            pointer-events: none;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(139, 92, 246, 0.4);
+        }
+
+        .feature-card:hover::after {
+            opacity: 0.05;
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .feature-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .feature-desc {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* File Structure */
+        .files-section {
+            margin-bottom: 60px;
+        }
+
+        .file-tree {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 32px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 14px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 16px;
+            border-radius: 8px;
+            transition: background 0.2s;
+            margin-left: var(--indent, 0);
+        }
+
+        .file-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .file-icon {
+            margin-right: 12px;
+            font-size: 18px;
+        }
+
+        .file-name {
+            color: var(--text-primary);
+        }
+
+        .file-name.folder {
+            color: var(--accent-gold);
+            font-weight: 500;
+        }
+
+        .file-name.component {
+            color: var(--accent-blue);
+        }
+
+        .file-desc {
+            margin-left: auto;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        /* Cards Preview */
+        .cards-section {
+            margin-bottom: 60px;
+        }
+
+        .cards-preview {
+            display: flex;
+            justify-content: center;
+            gap: -40px;
+            padding: 40px;
+            perspective: 1000px;
+        }
+
+        .preview-card {
+            width: 140px;
+            height: 220px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 2px solid var(--accent-gold);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .preview-card:hover {
+            transform: translateY(-20px) rotateY(10deg);
+            box-shadow: 0 30px 60px rgba(255, 215, 0, 0.2);
+        }
+
+        .preview-card:nth-child(1) { transform: rotate(-8deg) translateX(20px); z-index: 1; }
+        .preview-card:nth-child(2) { transform: rotate(-4deg) translateX(10px); z-index: 2; }
+        .preview-card:nth-child(3) { transform: rotate(0deg); z-index: 3; }
+        .preview-card:nth-child(4) { transform: rotate(4deg) translateX(-10px); z-index: 2; }
+        .preview-card:nth-child(5) { transform: rotate(8deg) translateX(-20px); z-index: 1; }
+
+        .preview-card:nth-child(3):hover {
+            transform: translateY(-30px) scale(1.1);
+        }
+
+        .card-symbol {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+
+        .card-name {
+            font-size: 12px;
+            color: var(--accent-gold);
+            text-align: center;
+            padding: 0 10px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid var(--border-color);
+            margin-top: 40px;
+        }
+
+        .footer-text {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .footer-tech {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 16px;
+        }
+
+        .footer-badge {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .features-grid { grid-template-columns: 1fr; }
+            .arch-flow { flex-direction: column; }
+            .arch-arrow { transform: rotate(90deg); }
+        }
+
+        @media (max-width: 640px) {
+            .container { padding: 30px 20px; }
+            .title { font-size: 36px; }
+            .subtitle { font-size: 12px; letter-spacing: 4px; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .stat-number { font-size: 36px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="background-effects">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-container">
+                <div class="logo-icon">🔮</div>
+            </div>
+            <h1 class="title">塔罗叙事</h1>
+            <p class="subtitle">The Mystic Narrative</p>
+            <p class="description">
+                一款精美的塔罗牌抽卡应用，采用现代化的 React 技术栈构建，
+                支持手势驱动的 3D 卡片旋转木马和精美的牌面解读展示。
+                为用户带来沉浸式的神秘塔罗体验。
+            </p>
+        </header>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">78</div>
+                <div class="stat-label">塔罗牌总数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">22</div>
+                <div class="stat-label">大阿卡纳</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">56</div>
+                <div class="stat-label">小阿卡纳</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">4</div>
+                <div class="stat-label">核心组件</div>
+            </div>
+        </div>
+
+        <!-- Tech Stack -->
+        <section class="tech-section">
+            <h2 class="section-title">
+                <span class="section-icon">⚡</span>
+                技术栈
+            </h2>
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <div class="tech-icon react">⚛️</div>
+                    <div class="tech-info">
+                        <h4>React</h4>
+                        <p>现代化的用户界面库，使用 Hooks 进行状态管理</p>
+                        <span class="tech-version">v19.2.0</span>
+                    </div>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-icon typescript">📘</div>
+                    <div class="tech-info">
+                        <h4>TypeScript</h4>
+                        <p>强类型支持，提供更好的代码质量和开发体验</p>
+                        <span class="tech-version">v5.9.3</span>
+                    </div>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-icon vite">⚡</div>
+                    <div class="tech-info">
+                        <h4>Vite</h4>
+                        <p>下一代前端构建工具，极速的热模块替换</p>
+                        <span class="tech-version">v7.2.4</span>
+                    </div>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-icon tailwind">🎨</div>
+                    <div class="tech-info">
+                        <h4>Tailwind CSS</h4>
+                        <p>实用优先的 CSS 框架，快速构建自定义设计</p>
+                        <span class="tech-version">v4.1.18</span>
+                    </div>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-icon framer">🎬</div>
+                    <div class="tech-info">
+                        <h4>Framer Motion</h4>
+                        <p>强大的动画库，实现流畅的 3D 卡片翻转效果</p>
+                        <span class="tech-version">v12.29.2</span>
+                    </div>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-icon zustand">🐻</div>
+                    <div class="tech-info">
+                        <h4>Zustand</h4>
+                        <p>轻量级状态管理库，简洁高效</p>
+                        <span class="tech-version">v5.0.10</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Architecture -->
+        <section class="arch-section">
+            <h2 class="section-title">
+                <span class="section-icon">🏗️</span>
+                应用架构
+            </h2>
+            <div class="arch-diagram">
+                <div class="arch-flow">
+                    <div class="arch-node">
+                        <div class="arch-node-icon">🎴</div>
+                        <div class="arch-node-title">TarotCarousel</div>
+                        <div class="arch-node-sub">3D 卡片旋转木马</div>
+                    </div>
+                    <span class="arch-arrow">→</span>
+                    <div class="arch-node">
+                        <div class="arch-node-icon">✨</div>
+                        <div class="arch-node-title">TarotCard3D</div>
+                        <div class="arch-node-sub">单张卡片渲染</div>
+                    </div>
+                    <span class="arch-arrow">→</span>
+                    <div class="arch-node">
+                        <div class="arch-node-icon">🔮</div>
+                        <div class="arch-node-title">RevealedCard</div>
+                        <div class="arch-node-sub">牌面解读展示</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section class="features-section">
+            <h2 class="section-title">
+                <span class="section-icon">✨</span>
+                核心功能
+            </h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">👆</div>
+                    <div class="feature-title">手势驱动交互</div>
+                    <div class="feature-desc">
+                        支持左右滑动浏览卡牌、上滑抽牌、点击确认等自然手势操作，
+                        带来流畅直观的用户体验。
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎴</div>
+                    <div class="feature-title">3D 卡片效果</div>
+                    <div class="feature-desc">
+                        使用 Framer Motion 实现逼真的 3D 卡片翻转动画，
+                        包括视差背景和弹簧物理效果。
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <div class="feature-title">正逆位解读</div>
+                    <div class="feature-desc">
+                        每张牌都有完整的正位和逆位含义解读，
+                        随机决定牌面方向，提供真实的塔罗体验。
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <div class="feature-title">精美视觉设计</div>
+                    <div class="feature-desc">
+                        神秘的暗色主题配合金色点缀，
+                        玻璃拟态效果和动态粒子背景营造沉浸氛围。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cards Preview -->
+        <section class="cards-section">
+            <h2 class="section-title">
+                <span class="section-icon">🃏</span>
+                卡牌预览
+            </h2>
+            <div class="cards-preview">
+                <div class="preview-card">
+                    <span class="card-symbol">🌙</span>
+                    <span class="card-name">月亮</span>
+                </div>
+                <div class="preview-card">
+                    <span class="card-symbol">⭐</span>
+                    <span class="card-name">星星</span>
+                </div>
+                <div class="preview-card">
+                    <span class="card-symbol">☀️</span>
+                    <span class="card-name">太阳</span>
+                </div>
+                <div class="preview-card">
+                    <span class="card-symbol">🌍</span>
+                    <span class="card-name">世界</span>
+                </div>
+                <div class="preview-card">
+                    <span class="card-symbol">⚖️</span>
+                    <span class="card-name">正义</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- File Structure -->
+        <section class="files-section">
+            <h2 class="section-title">
+                <span class="section-icon">📁</span>
+                项目结构
+            </h2>
+            <div class="file-tree">
+                <div class="file-item">
+                    <span class="file-icon">📂</span>
+                    <span class="file-name folder">src/</span>
+                    <span class="file-desc">源代码目录</span>
+                </div>
+                <div class="file-item" style="--indent: 24px;">
+                    <span class="file-icon">⚛️</span>
+                    <span class="file-name component">App.tsx</span>
+                    <span class="file-desc">主应用入口组件</span>
+                </div>
+                <div class="file-item" style="--indent: 24px;">
+                    <span class="file-icon">📂</span>
+                    <span class="file-name folder">components/</span>
+                    <span class="file-desc">React 组件</span>
+                </div>
+                <div class="file-item" style="--indent: 48px;">
+                    <span class="file-icon">🎠</span>
+                    <span class="file-name component">TarotCarousel.tsx</span>
+                    <span class="file-desc">手势驱动的旋转木马</span>
+                </div>
+                <div class="file-item" style="--indent: 48px;">
+                    <span class="file-icon">🎴</span>
+                    <span class="file-name component">TarotCard3D.tsx</span>
+                    <span class="file-desc">3D 卡片组件</span>
+                </div>
+                <div class="file-item" style="--indent: 48px;">
+                    <span class="file-icon">✨</span>
+                    <span class="file-name component">RevealedCard.tsx</span>
+                    <span class="file-desc">牌面解读展示</span>
+                </div>
+                <div class="file-item" style="--indent: 24px;">
+                    <span class="file-icon">📂</span>
+                    <span class="file-name folder">data/</span>
+                    <span class="file-desc">数据文件</span>
+                </div>
+                <div class="file-item" style="--indent: 48px;">
+                    <span class="file-icon">📄</span>
+                    <span class="file-name">tarotCards.ts</span>
+                    <span class="file-desc">78 张塔罗牌完整数据</span>
+                </div>
+                <div class="file-item" style="--indent: 24px;">
+                    <span class="file-icon">🎨</span>
+                    <span class="file-name">index.css</span>
+                    <span class="file-desc">全局样式与主题</span>
+                </div>
+                <div class="file-item" style="--indent: 24px;">
+                    <span class="file-icon">📘</span>
+                    <span class="file-name">types.ts</span>
+                    <span class="file-desc">TypeScript 类型定义</span>
+                </div>
+                <div class="file-item">
+                    <span class="file-icon">📂</span>
+                    <span class="file-name folder">public/</span>
+                    <span class="file-desc">静态资源</span>
+                </div>
+                <div class="file-item" style="--indent: 24px;">
+                    <span class="file-icon">🖼️</span>
+                    <span class="file-name folder">tarot_hd/</span>
+                    <span class="file-desc">高清塔罗牌图片</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p class="footer-text">塔罗叙事 · 神秘与科技的完美融合</p>
+            <div class="footer-tech">
+                <span class="footer-badge">React 19</span>
+                <span class="footer-badge">TypeScript</span>
+                <span class="footer-badge">Vite 7</span>
+                <span class="footer-badge">Framer Motion</span>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Add interactivity to preview cards
+        document.querySelectorAll('.preview-card').forEach((card, index) => {
+            card.addEventListener('mouseenter', () => {
+                card.style.zIndex = 10;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.zIndex = 3 - Math.abs(index - 2);
+            });
+        });
+    </script>
+</body>
+</html>
