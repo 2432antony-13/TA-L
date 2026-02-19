@@ -1,0 +1,782 @@
+[
+  {
+    "id": 1,
+    "name": "The Fool",
+    "arcana": "major",
+    "suit": null,
+    "rank": null,
+    "meaning_up": "Upright meaning placeholder",
+    "meaning_rev": "Reversed meaning placeholder",
+    "image_url": "/cards/major/the-fool.jpg"
+  },
+  {
+    "id": 2,
+    "name": "The Magician",
+    "arcana": "major",
+    "suit": null,
+    "rank": null,
+    "meaning_up": "Upright meaning placeholder",
+    "meaning_rev": "Reversed meaning placeholder",
+    "image_url": "/cards/major/the-magician.jpg"
+  },
+  {
+    "id": 3,
+    "name": "The High Priestess",
+    "arcana": "major",
+    "suit": null,
+    "rank": null,
+    "meaning_up": "Upright meaning placeholder",
+    "meaning_rev": "Reversed meaning placeholder",
+    "image_url": "/cards/major/the-high-priestess.jpg"
+  },
+  {
+    "id": 4,
+    "name": "The Empress",
+    "arcana": "major",
+    "suit": null,
+    "rank": null,
+    "meaning_up": "Upright meaning placeholder",
+    "meaning_rev": "Reversed meaning placeholder",
+    "image_url": "/cards/major/the-empress.jpg"
+  },
+  {
+    "id": 5,
+    "name": "The Emperor",
+    "arcana": "major",
+    "suit": null,
+    "rank": null,
+    "meaning_up": "Upright meaning placeholder",
+    "meaning_rev": "Reversed meaning placeholder",
+    "image_url": "/cards/major/the-emperor.jpg"
+  },
+  {
+    "id": 6,
+    "name": "The Hierophant",
+    "arcana": "major",
+    "suit": null,
+    "rank": null,
+    "meaning_up": "Upright meaning placeholder",
+    "meaning_rev": "Reversed meaning placeholder",
+    "image_url": "/cards/major/the-hierophant.jpg"
+  },
+  {
+    "id": 7,
+    "name": "The Lovers",
+    "arcana": "major",
+    "suit": null,
+    "rank": null,
+    "meaning_up": "Upright meaning placeholder",
+    "meaning_rev": "Reversed meaning placeholder",
+    "image_url": "/cards/major/the-lovers.jpg"
+  },
+  {
+    "id": 8,
+    "name": "The Chariot",
+    "arcana": "major",
+    "suit": null,
+    "rank": null,
+    "meaning_up": "Upright meaning placeholder",
+    "meaning_rev": "Reversed meaning placeholder",
+    "image_url": "/cards/major/the-chariot.jpg"
+  },
+  {
+    "id": 9,
+    "name": "Strength",
+    "arcana": "major",
+    "suit": null,
+    "rank": null,
+    "meaning_up": "Upright meaning placeholder",
+    "meaning_rev": "Reversed meaning placeholder",
+    "image_url": "/cards/major/strength.jpg"
+  },
+  {
+    "id": 10,
+    "name": "The Hermit",
+    "arcana": "major",
+    "suit": null,
+    "rank": null,
+    "meaning_up": "Upright meaning placeholder",
+    "meaning_rev": "Reversed meaning placeholder",
+    "image_url": "/cards/major/the-hermit.jpg"
+  },
+  {
+    "id": 11,
+    "name": "Wheel Of Fortune",
+    "arcana": "major",
+    "suit": null,
+    "rank": null,
+    "meaning_up": "Upright meaning placeholder",
+    "meaning_rev": "Reversed meaning placeholder",
+    "image_url": "/cards/major/wheel-of-fortune.jpg"
+  },
+  {
+    "id": 12,
+    "name": "Justice",
+    "arcana": "major",
+    "suit": null,
+    "rank": null,
+    "meaning_up": "Upright meaning placeholder",
+    "meaning_rev": "Reversed meaning placeholder",
+    "image_url": "/cards/major/justice.jpg"
+  },
+  {
+    "id": 13,
+    "name": "The Hanged Man",
+    "arcana": "major",
+    "suit": null,
+    "rank": null,
+    "meaning_up": "Upright meaning placeholder",
+    "meaning_rev": "Reversed meaning placeholder",
+    "image_url": "/cards/major/the-hanged-man.jpg"
+  },
+  {
+    "id": 14,
+    "name": "Death",
+    "arcana": "major",
+    "suit": null,
+    "rank": null,
+    "meaning_up": "Upright meaning placeholder",
+    "meaning_rev": "Reversed meaning placeholder",
+    "image_url": "/cards/major/death.jpg"
+  },
+  {
+    "id": 15,
+    "name": "Temperance",
+    "arcana": "major",
+    "suit": null,
+    "rank": null,
+    "meaning_up": "Upright meaning placeholder",
+    "meaning_rev": "Reversed meaning placeholder",
+    "image_url": "/cards/major/temperance.jpg"
+  },
+  {
+    "id": 16,
+    "name": "The Devil",
+    "arcana": "major",
+    "suit": null,
+    "rank": null,
+    "meaning_up": "Upright meaning placeholder",
+    "meaning_rev": "Reversed meaning placeholder",
+    "image_url": "/cards/major/the-devil.jpg"
+  },
+  {
+    "id": 17,
+    "name": "The Tower",
+    "arcana": "major",
+    "suit": null,
+    "rank": null,
+    "meaning_up": "Upright meaning placeholder",
+    "meaning_rev": "Reversed meaning placeholder",
+    "image_url": "/cards/major/the-tower.jpg"
+  },
+  {
+    "id": 18,
+    "name": "The Star",
+    "arcana": "major",
+    "suit": null,
+    "rank": null,
+    "meaning_up": "Upright meaning placeholder",
+    "meaning_rev": "Reversed meaning placeholder",
+    "image_url": "/cards/major/the-star.jpg"
+  },
+  {
+    "id": 19,
+    "name": "The Moon",
+    "arcana": "major",
+    "suit": null,
+    "rank": null,
+    "meaning_up": "Upright meaning placeholder",
+    "meaning_rev": "Reversed meaning placeholder",
+    "image_url": "/cards/major/the-moon.jpg"
+  },
+  {
+    "id": 20,
+    "name": "The Sun",
+    "arcana": "major",
+    "suit": null,
+    "rank": null,
+    "meaning_up": "Upright meaning placeholder",
+    "meaning_rev": "Reversed meaning placeholder",
+    "image_url": "/cards/major/the-sun.jpg"
+  },
+  {
+    "id": 21,
+    "name": "Judgement",
+    "arcana": "major",
+    "suit": null,
+    "rank": null,
+    "meaning_up": "Upright meaning placeholder",
+    "meaning_rev": "Reversed meaning placeholder",
+    "image_url": "/cards/major/judgement.jpg"
+  },
+  {
+    "id": 22,
+    "name": "The World",
+    "arcana": "major",
+    "suit": null,
+    "rank": null,
+    "meaning_up": "Upright meaning placeholder",
+    "meaning_rev": "Reversed meaning placeholder",
+    "image_url": "/cards/major/the-world.jpg"
+  },
+  {
+    "id": 23,
+    "name": "Ace of Wands",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": "ace",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/wands/ace.jpg"
+  },
+  {
+    "id": 24,
+    "name": "2 of Wands",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": "2",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/wands/2.jpg"
+  },
+  {
+    "id": 25,
+    "name": "3 of Wands",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": "3",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/wands/3.jpg"
+  },
+  {
+    "id": 26,
+    "name": "4 of Wands",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": "4",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/wands/4.jpg"
+  },
+  {
+    "id": 27,
+    "name": "5 of Wands",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": "5",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/wands/5.jpg"
+  },
+  {
+    "id": 28,
+    "name": "6 of Wands",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": "6",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/wands/6.jpg"
+  },
+  {
+    "id": 29,
+    "name": "7 of Wands",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": "7",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/wands/7.jpg"
+  },
+  {
+    "id": 30,
+    "name": "8 of Wands",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": "8",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/wands/8.jpg"
+  },
+  {
+    "id": 31,
+    "name": "9 of Wands",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": "9",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/wands/9.jpg"
+  },
+  {
+    "id": 32,
+    "name": "10 of Wands",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": "10",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/wands/10.jpg"
+  },
+  {
+    "id": 33,
+    "name": "Page of Wands",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": "page",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/wands/page.jpg"
+  },
+  {
+    "id": 34,
+    "name": "Knight of Wands",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": "knight",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/wands/knight.jpg"
+  },
+  {
+    "id": 35,
+    "name": "Queen of Wands",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": "queen",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/wands/queen.jpg"
+  },
+  {
+    "id": 36,
+    "name": "King of Wands",
+    "arcana": "minor",
+    "suit": "wands",
+    "rank": "king",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/wands/king.jpg"
+  },
+  {
+    "id": 37,
+    "name": "Ace of Cups",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": "ace",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/cups/ace.jpg"
+  },
+  {
+    "id": 38,
+    "name": "2 of Cups",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": "2",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/cups/2.jpg"
+  },
+  {
+    "id": 39,
+    "name": "3 of Cups",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": "3",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/cups/3.jpg"
+  },
+  {
+    "id": 40,
+    "name": "4 of Cups",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": "4",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/cups/4.jpg"
+  },
+  {
+    "id": 41,
+    "name": "5 of Cups",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": "5",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/cups/5.jpg"
+  },
+  {
+    "id": 42,
+    "name": "6 of Cups",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": "6",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/cups/6.jpg"
+  },
+  {
+    "id": 43,
+    "name": "7 of Cups",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": "7",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/cups/7.jpg"
+  },
+  {
+    "id": 44,
+    "name": "8 of Cups",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": "8",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/cups/8.jpg"
+  },
+  {
+    "id": 45,
+    "name": "9 of Cups",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": "9",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/cups/9.jpg"
+  },
+  {
+    "id": 46,
+    "name": "10 of Cups",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": "10",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/cups/10.jpg"
+  },
+  {
+    "id": 47,
+    "name": "Page of Cups",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": "page",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/cups/page.jpg"
+  },
+  {
+    "id": 48,
+    "name": "Knight of Cups",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": "knight",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/cups/knight.jpg"
+  },
+  {
+    "id": 49,
+    "name": "Queen of Cups",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": "queen",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/cups/queen.jpg"
+  },
+  {
+    "id": 50,
+    "name": "King of Cups",
+    "arcana": "minor",
+    "suit": "cups",
+    "rank": "king",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/cups/king.jpg"
+  },
+  {
+    "id": 51,
+    "name": "Ace of Swords",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": "ace",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/swords/ace.jpg"
+  },
+  {
+    "id": 52,
+    "name": "2 of Swords",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": "2",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/swords/2.jpg"
+  },
+  {
+    "id": 53,
+    "name": "3 of Swords",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": "3",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/swords/3.jpg"
+  },
+  {
+    "id": 54,
+    "name": "4 of Swords",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": "4",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/swords/4.jpg"
+  },
+  {
+    "id": 55,
+    "name": "5 of Swords",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": "5",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/swords/5.jpg"
+  },
+  {
+    "id": 56,
+    "name": "6 of Swords",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": "6",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/swords/6.jpg"
+  },
+  {
+    "id": 57,
+    "name": "7 of Swords",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": "7",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/swords/7.jpg"
+  },
+  {
+    "id": 58,
+    "name": "8 of Swords",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": "8",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/swords/8.jpg"
+  },
+  {
+    "id": 59,
+    "name": "9 of Swords",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": "9",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/swords/9.jpg"
+  },
+  {
+    "id": 60,
+    "name": "10 of Swords",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": "10",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/swords/10.jpg"
+  },
+  {
+    "id": 61,
+    "name": "Page of Swords",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": "page",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/swords/page.jpg"
+  },
+  {
+    "id": 62,
+    "name": "Knight of Swords",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": "knight",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/swords/knight.jpg"
+  },
+  {
+    "id": 63,
+    "name": "Queen of Swords",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": "queen",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/swords/queen.jpg"
+  },
+  {
+    "id": 64,
+    "name": "King of Swords",
+    "arcana": "minor",
+    "suit": "swords",
+    "rank": "king",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/swords/king.jpg"
+  },
+  {
+    "id": 65,
+    "name": "Ace of Pentacles",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": "ace",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/pentacles/ace.jpg"
+  },
+  {
+    "id": 66,
+    "name": "2 of Pentacles",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": "2",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/pentacles/2.jpg"
+  },
+  {
+    "id": 67,
+    "name": "3 of Pentacles",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": "3",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/pentacles/3.jpg"
+  },
+  {
+    "id": 68,
+    "name": "4 of Pentacles",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": "4",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/pentacles/4.jpg"
+  },
+  {
+    "id": 69,
+    "name": "5 of Pentacles",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": "5",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/pentacles/5.jpg"
+  },
+  {
+    "id": 70,
+    "name": "6 of Pentacles",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": "6",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/pentacles/6.jpg"
+  },
+  {
+    "id": 71,
+    "name": "7 of Pentacles",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": "7",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/pentacles/7.jpg"
+  },
+  {
+    "id": 72,
+    "name": "8 of Pentacles",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": "8",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/pentacles/8.jpg"
+  },
+  {
+    "id": 73,
+    "name": "9 of Pentacles",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": "9",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/pentacles/9.jpg"
+  },
+  {
+    "id": 74,
+    "name": "10 of Pentacles",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": "10",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/pentacles/10.jpg"
+  },
+  {
+    "id": 75,
+    "name": "Page of Pentacles",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": "page",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/pentacles/page.jpg"
+  },
+  {
+    "id": 76,
+    "name": "Knight of Pentacles",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": "knight",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/pentacles/knight.jpg"
+  },
+  {
+    "id": 77,
+    "name": "Queen of Pentacles",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": "queen",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/pentacles/queen.jpg"
+  },
+  {
+    "id": 78,
+    "name": "King of Pentacles",
+    "arcana": "minor",
+    "suit": "pentacles",
+    "rank": "king",
+    "meaning_up": "Upright placeholder",
+    "meaning_rev": "Reversed placeholder",
+    "image_url": "/cards/pentacles/king.jpg"
+  }
+]

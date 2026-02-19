@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>塔罗牌美化方案对比 - 权杖骑士</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+SC:wght@400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 50%, #0d0d2a 100%);
+            font-family: 'Noto Serif SC', serif;
+            color: #e0e0e0;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            background: linear-gradient(135deg, #c9a961, #f4e5c3, #d4af37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 40px;
+            font-size: 0.95rem;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+        }
+
+        .card-panel h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            color: #d4af37;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .card-panel .desc {
+            font-size: 0.85rem;
+            color: #888;
+            text-align: center;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .card-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+        }
+
+        /* ========== 方案0: 原始图片 ========== */
+        .original-card {
+            width: 240px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ========== 方案A: CSS滤镜增强 ========== */
+        .css-enhanced-card {
+            width: 240px;
+            border-radius: 12px;
+            /* 核心CSS滤镜 */
+            filter:
+                saturate(1.4)
+                /* 提升饱和度 */
+                contrast(1.2)
+                /* 提升对比度 */
+                brightness(1.08)
+                /* 微调亮度 */
+                sepia(0.05)
+                /* 轻微暖色调 */
+                drop-shadow(0 0 20px rgba(255, 215, 0, 0.3));
+            box-shadow:
+                0 0 30px rgba(255, 215, 0, 0.2),
+                0 0 60px rgba(255, 140, 0, 0.1),
+                0 8px 32px rgba(0, 0, 0, 0.4);
+            transition: all 0.4s ease;
+        }
+
+        .css-enhanced-card:hover {
+            filter:
+                saturate(1.6) contrast(1.25) brightness(1.12) sepia(0.05) drop-shadow(0 0 30px rgba(255, 215, 0, 0.5));
+            transform: scale(1.03) translateY(-5px);
+            box-shadow:
+                0 0 50px rgba(255, 215, 0, 0.3),
+                0 0 80px rgba(255, 140, 0, 0.15),
+                0 12px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        /* ========== 方案B: AI超分辨率占位 ========== */
+        .ai-upscale-wrapper {
+            position: relative;
+            width: 240px;
+        }
+
+        .ai-upscale-card {
+            width: 100%;
+            border-radius: 12px;
+            filter:
+                saturate(1.3) contrast(1.15) brightness(1.05);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .ai-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .ai-notice {
+            margin-top: 15px;
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 0.8rem;
+            color: #a0a0c0;
+            line-height: 1.5;
+        }
+
+        /* ========== 方案C: 现代化设计 ========== */
+        .modern-card-wrapper {
+            position: relative;
+            width: 260px;
+        }
+
+        .modern-card-frame {
+            position: relative;
+            background: linear-gradient(180deg,
+                    #1a1a2e 0%,
+                    #16213e 50%,
+                    #0f0f23 100%);
+            border-radius: 16px;
+            padding: 20px 15px 25px;
+            border: 2px solid;
+            border-image: linear-gradient(135deg, #c9a961, #f4e5c3, #d4af37, #c9a961) 1;
+            box-shadow:
+                0 0 40px rgba(201, 169, 97, 0.15),
+                0 0 80px rgba(201, 169, 97, 0.08),
+                inset 0 0 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        /* 星空粒子背景 */
+        .modern-card-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(2px 2px at 20px 30px, rgba(255, 255, 255, 0.3), transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255, 215, 0, 0.2), transparent),
+                radial-gradient(1px 1px at 90px 40px, rgba(255, 255, 255, 0.3), transparent),
+                radial-gradient(2px 2px at 130px 80px, rgba(255, 215, 0, 0.15), transparent),
+                radial-gradient(1px 1px at 160px 120px, rgba(255, 255, 255, 0.25), transparent),
+                radial-gradient(2px 2px at 200px 50px, rgba(201, 169, 97, 0.2), transparent),
+                radial-gradient(1px 1px at 50px 150px, rgba(255, 255, 255, 0.3), transparent),
+                radial-gradient(2px 2px at 180px 180px, rgba(255, 215, 0, 0.15), transparent);
+            pointer-events: none;
+            animation: twinkle 4s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .modern-card-image {
+            width: 100%;
+            border-radius: 8px;
+            clip-path: inset(4% 4% 12% 4%);
+            /* 裁剪黑边框和底部文字 */
+            filter:
+                saturate(1.35) contrast(1.18) brightness(1.06);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 1;
+        }
+
+        .modern-card-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            text-align: center;
+            margin-top: 15px;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, #c9a961 0%, #f4e5c3 30%, #d4af37 60%, #c9a961 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 2px 4px rgba(201, 169, 97, 0.5));
+            position: relative;
+            z-index: 1;
+        }
+
+        .modern-card-subtitle {
+            font-size: 0.75rem;
+            text-align: center;
+            color: #888;
+            margin-top: 4px;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 悬停光晕效果 */
+        .modern-card-wrapper:hover .modern-card-frame {
+            box-shadow:
+                0 0 60px rgba(201, 169, 97, 0.25),
+                0 0 100px rgba(201, 169, 97, 0.12),
+                inset 0 0 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modern-card-wrapper:hover .modern-card-image {
+            filter:
+                saturate(1.5) contrast(1.22) brightness(1.1);
+        }
+
+        /* 评分区域 */
+        .rating {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .rating-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            text-align: center;
+        }
+
+        .rating-item span {
+            display: block;
+            color: #d4af37;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        /* 选中按钮 */
+        .select-btn {
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            background: linear-gradient(135deg, #c9a961, #d4af37);
+            border: none;
+            border-radius: 10px;
+            color: #0a0a1a;
+            font-family: 'Noto Serif SC', serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .select-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+    <h1>塔罗牌美化方案对比</h1>
+    <p class="subtitle">权杖骑士 (Knight of Wands) - 请选择您偏好的风格</p>
+
+    <div class="comparison-grid">
+        <!-- 原始图片 -->
+        <div class="card-panel">
+            <h2>原始图片</h2>
+            <p class="desc">Rider-Waite 1909 原版扫描<br>无任何处理</p>
+            <div class="card-container">
+                <img src="/tarot/w12.jpg" alt="原始" class="original-card">
+            </div>
+            <div class="rating">
+                <div class="rating-item">美观度<span>6/10</span></div>
+                <div class="rating-item">清晰度<span>5/10</span></div>
+                <div class="rating-item">现代感<span>3/10</span></div>
+            </div>
+        </div>
+
+        <!-- 方案A: CSS滤镜 -->
+        <div class="card-panel">
+            <h2>方案A: CSS滤镜增强</h2>
+            <p class="desc">实时滤镜处理<br>饱和度+对比度+金色光晕</p>
+            <div class="card-container">
+                <img src="/tarot/w12.jpg" alt="CSS增强" class="css-enhanced-card">
+            </div>
+            <div class="rating">
+                <div class="rating-item">美观度<span>7.5/10</span></div>
+                <div class="rating-item">实现难度<span>⭐</span></div>
+                <div class="rating-item">性能<span>极佳</span></div>
+            </div>
+            <button class="select-btn" onclick="alert('已选择方案A')">选择此方案</button>
+        </div>
+
+        <!-- 方案B: AI超分辨率 -->
+        <div class="card-panel">
+            <h2>方案B: AI超分辨率</h2>
+            <p class="desc">Real-ESRGAN 4x放大<br>需预处理所有图片</p>
+            <div class="card-container">
+                <div class="ai-upscale-wrapper">
+                    <img src="/tarot/w12.jpg" alt="AI放大" class="ai-upscale-card">
+                    <span class="ai-badge">需AI处理</span>
+                </div>
+            </div>
+            <div class="ai-notice">
+                ⚠️ 此方案需要使用AI工具批量处理78张图片，预计耗时30-60分钟。处理后可获得4倍分辨率(1400x2400px)的高清图像。
+            </div>
+            <div class="rating">
+                <div class="rating-item">美观度<span>8/10</span></div>
+                <div class="rating-item">实现难度<span>⭐⭐⭐</span></div>
+                <div class="rating-item">清晰度<span>极佳</span></div>
+            </div>
+            <button class="select-btn" onclick="alert('已选择方案B')">选择此方案</button>
+        </div>
+
+        <!-- 方案C: 现代化设计 -->
+        <div class="card-panel">
+            <h2>方案C: 现代化设计</h2>
+            <p class="desc">裁剪边框 + 金箔字体 + 星空背景<br>深色主题 + 粒子动画</p>
+            <div class="card-container">
+                <div class="modern-card-wrapper">
+                    <div class="modern-card-frame">
+                        <img src="/tarot/w12.jpg" alt="现代设计" class="modern-card-image">
+                        <div class="modern-card-title">KNIGHT OF WANDS</div>
+                        <div class="modern-card-subtitle">权杖骑士</div>
+                    </div>
+                </div>
+            </div>
+            <div class="rating">
+                <div class="rating-item">美观度<span>9/10</span></div>
+                <div class="rating-item">实现难度<span>⭐⭐</span></div>
+                <div class="rating-item">沉浸感<span>极佳</span></div>
+            </div>
+            <button class="select-btn" onclick="alert('已选择方案C')">选择此方案</button>
+        </div>
+    </div>
+
+</body>
+
+</html>

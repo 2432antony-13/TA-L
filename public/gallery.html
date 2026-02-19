@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>塔罗牌画廊 - 高清版</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+SC:wght@400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 50%, #0d0d2a 100%);
+            font-family: 'Noto Serif SC', serif;
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+
+        /* 星空背景 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(2px 2px at 100px 50px, rgba(255, 255, 255, 0.4), transparent),
+                radial-gradient(2px 2px at 300px 150px, rgba(255, 215, 0, 0.3), transparent),
+                radial-gradient(1px 1px at 500px 80px, rgba(255, 255, 255, 0.5), transparent),
+                radial-gradient(2px 2px at 700px 200px, rgba(201, 169, 97, 0.3), transparent),
+                radial-gradient(1px 1px at 200px 300px, rgba(255, 255, 255, 0.4), transparent),
+                radial-gradient(2px 2px at 900px 100px, rgba(255, 215, 0, 0.25), transparent),
+                radial-gradient(1px 1px at 400px 400px, rgba(255, 255, 255, 0.3), transparent),
+                radial-gradient(2px 2px at 600px 350px, rgba(201, 169, 97, 0.2), transparent);
+            pointer-events: none;
+            animation: twinkle 6s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* 头部 */
+        header {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 60px 20px 40px;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #c9a961 0%, #f4e5c3 30%, #d4af37 60%, #c9a961 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 6px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 40px rgba(201, 169, 97, 0.3);
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 1rem;
+            letter-spacing: 3px;
+        }
+
+        /* 分类选择器 */
+        .category-tabs {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(201, 169, 97, 0.3);
+            color: #c9a961;
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-family: 'Noto Serif SC', serif;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover,
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(201, 169, 97, 0.2), rgba(212, 175, 55, 0.15));
+            border-color: #d4af37;
+            box-shadow: 0 0 20px rgba(201, 169, 97, 0.2);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #c9a961, #d4af37);
+            color: #0a0a1a;
+            font-weight: 600;
+        }
+
+        /* 画廊网格 */
+        .gallery {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 30px;
+            padding: 40px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* 卡牌容器 */
+        .card-item {
+            position: relative;
+            aspect-ratio: 7/12;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card-item:hover {
+            transform: translateY(-15px) scale(1.05);
+            z-index: 10;
+        }
+
+        .card-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow:
+                0 10px 40px rgba(0, 0, 0, 0.4),
+                0 0 30px rgba(201, 169, 97, 0.1);
+            transition: all 0.4s ease;
+        }
+
+        .card-item:hover img {
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                0 0 50px rgba(201, 169, 97, 0.25),
+                0 0 80px rgba(255, 215, 0, 0.15);
+        }
+
+        /* 卡牌名称 */
+        .card-name {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 15px 10px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 100%);
+            border-radius: 0 0 12px 12px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #f4e5c3;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .card-item:hover .card-name {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 大图预览模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 500px;
+            max-height: 90vh;
+            animation: modalIn 0.4s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) rotateY(-20deg);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) rotateY(0);
+            }
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 16px;
+            box-shadow:
+                0 0 80px rgba(201, 169, 97, 0.3),
+                0 0 120px rgba(255, 215, 0, 0.15);
+        }
+
+        .modal-info {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .modal-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: #d4af37;
+            margin-bottom: 8px;
+        }
+
+        .modal-subtitle {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: #d4af37;
+        }
+
+        /* 统计信息 */
+        .stats {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            color: #d4af37;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>TAROT GALLERY</h1>
+        <p class="subtitle">Rider-Waite 1909 · 高清增强版</p>
+    </header>
+
+    <div class="stats">
+        <div class="stat-item">
+            <div class="stat-value">78</div>
+            <div class="stat-label">张牌</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">4×</div>
+            <div class="stat-label">放大倍率</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">1400×2400</div>
+            <div class="stat-label">分辨率</div>
+        </div>
+    </div>
+
+    <div class="category-tabs">
+        <button class="tab-btn active" data-category="all">全部</button>
+        <button class="tab-btn" data-category="major">大阿卡纳</button>
+        <button class="tab-btn" data-category="wands">权杖</button>
+        <button class="tab-btn" data-category="cups">圣杯</button>
+        <button class="tab-btn" data-category="swords">宝剑</button>
+        <button class="tab-btn" data-category="pentacles">星币</button>
+    </div>
+
+    <div class="gallery" id="gallery"></div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <img id="modal-img" src="" alt="">
+            <div class="modal-info">
+                <div class="modal-title" id="modal-title"></div>
+                <div class="modal-subtitle" id="modal-subtitle"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 塔罗牌数据
+        const cards = {
+            major: [
+                { id: 'm00', name: 'The Fool', cn: '愚人' },
+                { id: 'm01', name: 'The Magician', cn: '魔术师' },
+                { id: 'm02', name: 'The High Priestess', cn: '女祭司' },
+                { id: 'm03', name: 'The Empress', cn: '女皇' },
+                { id: 'm04', name: 'The Emperor', cn: '皇帝' },
+                { id: 'm05', name: 'The Hierophant', cn: '教皇' },
+                { id: 'm06', name: 'The Lovers', cn: '恋人' },
+                { id: 'm07', name: 'The Chariot', cn: '战车' },
+                { id: 'm08', name: 'Strength', cn: '力量' },
+                { id: 'm09', name: 'The Hermit', cn: '隐士' },
+                { id: 'm10', name: 'Wheel of Fortune', cn: '命运之轮' },
+                { id: 'm11', name: 'Justice', cn: '正义' },
+                { id: 'm12', name: 'The Hanged Man', cn: '倒吊人' },
+                { id: 'm13', name: 'Death', cn: '死神' },
+                { id: 'm14', name: 'Temperance', cn: '节制' },
+                { id: 'm15', name: 'The Devil', cn: '恶魔' },
+                { id: 'm16', name: 'The Tower', cn: '塔' },
+                { id: 'm17', name: 'The Star', cn: '星星' },
+                { id: 'm18', name: 'The Moon', cn: '月亮' },
+                { id: 'm19', name: 'The Sun', cn: '太阳' },
+                { id: 'm20', name: 'Judgement', cn: '审判' },
+                { id: 'm21', name: 'The World', cn: '世界' }
+            ],
+            wands: [
+                { id: 'w01', name: 'Ace of Wands', cn: '权杖王牌' },
+                { id: 'w02', name: 'Two of Wands', cn: '权杖二' },
+                { id: 'w03', name: 'Three of Wands', cn: '权杖三' },
+                { id: 'w04', name: 'Four of Wands', cn: '权杖四' },
+                { id: 'w05', name: 'Five of Wands', cn: '权杖五' },
+                { id: 'w06', name: 'Six of Wands', cn: '权杖六' },
+                { id: 'w07', name: 'Seven of Wands', cn: '权杖七' },
+                { id: 'w08', name: 'Eight of Wands', cn: '权杖八' },
+                { id: 'w09', name: 'Nine of Wands', cn: '权杖九' },
+                { id: 'w10', name: 'Ten of Wands', cn: '权杖十' },
+                { id: 'w11', name: 'Page of Wands', cn: '权杖侍者' },
+                { id: 'w12', name: 'Knight of Wands', cn: '权杖骑士' },
+                { id: 'w13', name: 'Queen of Wands', cn: '权杖王后' },
+                { id: 'w14', name: 'King of Wands', cn: '权杖国王' }
+            ],
+            cups: [
+                { id: 'c01', name: 'Ace of Cups', cn: '圣杯王牌' },
+                { id: 'c02', name: 'Two of Cups', cn: '圣杯二' },
+                { id: 'c03', name: 'Three of Cups', cn: '圣杯三' },
+                { id: 'c04', name: 'Four of Cups', cn: '圣杯四' },
+                { id: 'c05', name: 'Five of Cups', cn: '圣杯五' },
+                { id: 'c06', name: 'Six of Cups', cn: '圣杯六' },
+                { id: 'c07', name: 'Seven of Cups', cn: '圣杯七' },
+                { id: 'c08', name: 'Eight of Cups', cn: '圣杯八' },
+                { id: 'c09', name: 'Nine of Cups', cn: '圣杯九' },
+                { id: 'c10', name: 'Ten of Cups', cn: '圣杯十' },
+                { id: 'c11', name: 'Page of Cups', cn: '圣杯侍者' },
+                { id: 'c12', name: 'Knight of Cups', cn: '圣杯骑士' },
+                { id: 'c13', name: 'Queen of Cups', cn: '圣杯王后' },
+                { id: 'c14', name: 'King of Cups', cn: '圣杯国王' }
+            ],
+            swords: [
+                { id: 's01', name: 'Ace of Swords', cn: '宝剑王牌' },
+                { id: 's02', name: 'Two of Swords', cn: '宝剑二' },
+                { id: 's03', name: 'Three of Swords', cn: '宝剑三' },
+                { id: 's04', name: 'Four of Swords', cn: '宝剑四' },
+                { id: 's05', name: 'Five of Swords', cn: '宝剑五' },
+                { id: 's06', name: 'Six of Swords', cn: '宝剑六' },
+                { id: 's07', name: 'Seven of Swords', cn: '宝剑七' },
+                { id: 's08', name: 'Eight of Swords', cn: '宝剑八' },
+                { id: 's09', name: 'Nine of Swords', cn: '宝剑九' },
+                { id: 's10', name: 'Ten of Swords', cn: '宝剑十' },
+                { id: 's11', name: 'Page of Swords', cn: '宝剑侍者' },
+                { id: 's12', name: 'Knight of Swords', cn: '宝剑骑士' },
+                { id: 's13', name: 'Queen of Swords', cn: '宝剑王后' },
+                { id: 's14', name: 'King of Swords', cn: '宝剑国王' }
+            ],
+            pentacles: [
+                { id: 'p01', name: 'Ace of Pentacles', cn: '星币王牌' },
+                { id: 'p02', name: 'Two of Pentacles', cn: '星币二' },
+                { id: 'p03', name: 'Three of Pentacles', cn: '星币三' },
+                { id: 'p04', name: 'Four of Pentacles', cn: '星币四' },
+                { id: 'p05', name: 'Five of Pentacles', cn: '星币五' },
+                { id: 'p06', name: 'Six of Pentacles', cn: '星币六' },
+                { id: 'p07', name: 'Seven of Pentacles', cn: '星币七' },
+                { id: 'p08', name: 'Eight of Pentacles', cn: '星币八' },
+                { id: 'p09', name: 'Nine of Pentacles', cn: '星币九' },
+                { id: 'p10', name: 'Ten of Pentacles', cn: '星币十' },
+                { id: 'p11', name: 'Page of Pentacles', cn: '星币侍者' },
+                { id: 'p12', name: 'Knight of Pentacles', cn: '星币骑士' },
+                { id: 'p13', name: 'Queen of Pentacles', cn: '星币王后' },
+                { id: 'p14', name: 'King of Pentacles', cn: '星币国王' }
+            ]
+        };
+
+        const gallery = document.getElementById('gallery');
+        const modal = document.getElementById('modal');
+        let currentCategory = 'all';
+
+        function renderGallery(category) {
+            gallery.innerHTML = '';
+            let cardList = [];
+
+            if (category === 'all') {
+                cardList = [...cards.major, ...cards.wands, ...cards.cups, ...cards.swords, ...cards.pentacles];
+            } else {
+                cardList = cards[category];
+            }
+
+            cardList.forEach(card => {
+                const div = document.createElement('div');
+                div.className = 'card-item';
+                div.innerHTML = `
+          <img src="/tarot_hd/${card.id}.jpg" alt="${card.cn}" loading="lazy">
+          <div class="card-name">${card.cn}</div>
+        `;
+                div.onclick = () => openModal(card);
+                gallery.appendChild(div);
+            });
+        }
+
+        function openModal(card) {
+            document.getElementById('modal-img').src = `/tarot_hd/${card.id}.jpg`;
+            document.getElementById('modal-title').textContent = card.name;
+            document.getElementById('modal-subtitle').textContent = card.cn;
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+
+        modal.onclick = (e) => {
+            if (e.target === modal) closeModal();
+        };
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Tab切换
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderGallery(btn.dataset.category);
+            };
+        });
+
+        // 初始化
+        renderGallery('all');
+    </script>
+</body>
+
+</html>

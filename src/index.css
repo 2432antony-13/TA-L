@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+@theme {
+  /* Mystic Color Palette */
+  --color-mystic-dark: #05040a;
+  /* 更深邃的虚空黑 */
+  --color-mystic-purple: #2a1b3d;
+  /* 深紫色 */
+  --color-mystic-deep: #1a1a2e;
+  /* 深蓝紫 */
+
+  --color-neon-gold: #ffd700;
+  --color-neon-gold-dim: #b8860b;
+  --color-plasma-blue: #00f2ff;
+  --color-starlight: #e2e8f0;
+
+  --color-void-black: #000000;
+
+  /* Advanced Shadows */
+  --shadow-neon: 0 0 10px rgba(255, 215, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.3);
+  --shadow-neon-glow: 0 0 5px #ffd700, 0 0 10px #ffd700, 0 0 20px rgba(255, 215, 0, 0.5), 0 0 40px rgba(255, 215, 0, 0.3);
+  --shadow-deep-space: 0 20px 50px -12px rgba(0, 0, 0, 0.9);
+
+  /* Animations */
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-slow: pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-shimmer: shimmer 2.5s linear infinite;
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+      transform: translateY(-15px) rotate(1deg);
+    }
+  }
+
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+}
+
+@layer base {
+  body {
+    min-height: 100vh;
+    color: var(--color-starlight);
+    overflow: hidden;
+    /* Deep Space Gradient */
+    background: radial-gradient(circle at 50% 120%, #2a1b3d, #0f0c29 40%, #000000 90%);
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.05em;
+  }
+}
+
+@layer components {
+
+  /* Premium Glass Effect */
+  .glass-panel {
+    background: rgba(20, 20, 35, 0.4);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    /* Top highlight similar to rim light */
+    box-shadow:
+      0 8px 32px 0 rgba(0, 0, 0, 0.5),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    /* Inner stroke */
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Noise Texture Overlay (Optional, simulated with ::before if needed, keeping it clean for now) */
+
+  .glass-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    opacity: 0.5;
+  }
+}
