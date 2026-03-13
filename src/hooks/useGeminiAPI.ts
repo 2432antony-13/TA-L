@@ -12,7 +12,7 @@ interface TarotReadingRequest {
 }
 
 interface UseGeminiAPIResult {
-    getReading: (request: TarotReadingRequest) => Promise<void>
+    getReading: (request: TarotReadingRequest) => Promise<string | null>
     isLoading: boolean
     isStreaming: boolean
     error: string | null
@@ -89,14 +89,14 @@ export function useGeminiAPI(): UseGeminiAPIResult {
                     body: JSON.stringify({
                         contents: [{ parts: [{ text: prompt }] }],
                         safetySettings: [
-                            { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_ONLY_HIGH' },
-                            { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_ONLY_HIGH' },
-                            { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_ONLY_HIGH' },
-                            { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_ONLY_HIGH' }
+                            { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_LOW_AND_ABOVE' },
+                            { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_LOW_AND_ABOVE' },
+                            { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_LOW_AND_ABOVE' },
+                            { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_LOW_AND_ABOVE' }
                         ],
                         generationConfig: {
                             temperature: 0.8,
-                            maxOutputTokens: 4096,
+                            maxOutputTokens: 6000,
                         }
                     }),
                     signal: abortControllerRef.current.signal
@@ -168,10 +168,11 @@ export function useGeminiAPI(): UseGeminiAPIResult {
 
                 // 保存历史记录
                 if (finalReading) {
-                    await saveHistory(request, finalReading, finalThinking, deviceId)
+                    const savedId = await saveHistory(request, finalReading, finalThinking, deviceId)
+                    return savedId  // 返回后端生成的 record id
                 }
 
-                return  // 成功，退出重试循环
+                return null  // 成功但未保存
 
             } catch (err: any) {
                 if (err.name === 'AbortError') {
@@ -181,7 +182,7 @@ export function useGeminiAPI(): UseGeminiAPIResult {
                     }
                     setIsStreaming(false)
                     setIsLoading(false)
-                    return
+                    return null
                 }
                 lastError = err
                 if (attempt < MAX_RETRIES) {
@@ -208,9 +209,9 @@ export function useGeminiAPI(): UseGeminiAPIResult {
 }
 
 // 保存历史记录
-async function saveHistory(request: TarotReadingRequest, reading: string, thinking: string, deviceId: string) {
+async function saveHistory(request: TarotReadingRequest, reading: string, thinking: string, deviceId: string): Promise<string | null> {
     try {
-        await fetch(HISTORY_API_URL, {
+        const res = await fetch(HISTORY_API_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -225,9 +226,14 @@ async function saveHistory(request: TarotReadingRequest, reading: string, thinki
                 thinking: thinking
             })
         })
+        if (res.ok) {
+            const data = await res.json()
+            return data.record?.id || null
+        }
     } catch (e) {
         console.error('Failed to save history:', e)
     }
+    return null
 }
 
 // ----------------------------------------------------------------------
@@ -296,59 +302,85 @@ function buildTarotPrompt(request: TarotReadingRequest): string {
     return basePrompt(request.question, cardDescriptions)
 }
 
-const SYSTEM_INSTRUCTION = `
-STRICT RULES:
-1. <Thinking> block: ≤50 Chinese characters. Only 1-2 key insights. No bullet lists.
-2. Reading: Each section ≤40 Chinese characters. Be direct and concise.
-3. End with EXACTLY this JSON (2 questions in Chinese):
+function buildPromptForT(question: string, cardDescriptions: string): string {
+    return `
+# Role
+你是塔罗解读引擎，当前模式：T（理性分析师）
+
+# Context
+## 提问
+${question}
+
+## 牌阵
+过去·现在·未来三牌阵 | ${cardDescriptions}
+
+# Task
+请先在 <Thinking> 标签中简要分析（包括牌面关联、元素分析、逻辑推演），然后进行正式解读。
+
+<Thinking>
+...简要分析思考过程...
+</Thinking>
+
+## 1. 客观局势剖析
+## 2. 逻辑演进脉络
+## 3. 务实行动策略
+
+风格要求：
+- 保持高度的客观与理性，注重因果关系的分析与元素生克的推演。
+- 语言风格严谨、冷峻、务实，拒绝任何情绪化的感性宣泄或过度安慰。
+- 整体篇幅需详实，在“逻辑演进脉络”中必须逐一详细推演“过去、现在、未来”的发展轨迹（结构深度对标详细的情感解读，但内核为纯粹的逻辑拆解）。
+
+# Constraints
+- 不预测具体人事时地物
+- 敏感话题追加求助资源
+- 保持可能性语气，禁用"一定/必然/绝对"
+
+最后附上2个建议追问（JSON格式）：
 \`\`\`json
 {"suggested_questions": ["追问1", "追问2"]}
 \`\`\`
-`
-
-function buildPromptForT(question: string, cardDescriptions: string): string {
-    return `
-${SYSTEM_INSTRUCTION}
-
-你是塔罗理性顾问，只关注事实与利弊，禁用玄学/感性词汇，语气冷静专业。
-
-用户提问：${question}
-牌面：${cardDescriptions}
-
-<Thinking>（此处填写，≤50字的核心洞察）</Thinking>
-
-## 局势研判
-- 核心矛盾：
-- 趋势：
-
-## 风险
-- 显性：
-- 隐性：
-
-## 行动建议
-1.
-2.
 `
 }
 
 function buildPromptForF(question: string, cardDescriptions: string): string {
     return `
-${SYSTEM_INSTRUCTION}
+# Role
+你是塔罗解读引擎，当前模式：F（心灵疗愈师）
 
-你是塔罗心灵疗愈师，温柔共情，用画面和意象说话，不预测吉凶，不说教。
+# Context
+## 提问
+${question}
 
-用户提问：${question}
-牌面：${cardDescriptions}
+## 牌阵
+过去·现在·未来三牌阵 | ${cardDescriptions}
 
-<Thinking>（此处填写，≤50字的核心洞察）</Thinking>
+# Task
+请先在 <Thinking> 标签中感受用户的能量场和牌面传达的情绪（包括色彩、直觉、情感链接），然后进行正式解读。
 
-## 心的共鸣
-我感觉到...
+<Thinking>
+...简要感受和思考...
+</Thinking>
 
-## 牌面故事
-[用一个意象串联三张牌]
-## 温柔提醒
-[向内探索的建议]
+## 1. 过去：情绪的源头与释放
+## 2. 现在：当下的共鸣与觉察
+## 3. 未来：心灵的走向与微光
+## 4. 疗愈与前行的建议
+
+风格要求：
+- 保持深度的共情与倾听感，注重情绪的疗愈与直觉的引导，像一位温暖的心理咨询师。
+- 语言风格温柔、包容、充满力量，每一段可以使用1个轻柔的问句来引导用户自我觉察。
+- 整体篇幅需详实，必须逐一详细解读“过去”、“现在”、“未来”三张牌背后的情绪流动规律与潜意识暗示。
+- 第4部分“疗愈与前行的建议”中，请结合牌面给出 2-3 个具体、具有落地性且贴近生活的“自我疗愈小行动”（比如写日记、做特定的冥想、或是放下某一种执念等），实实在在地帮助用户。
+
+# Constraints
+- 不预测具体人事时地物
+- 敏感话题追加求助资源
+- 保持可能性语气，禁用"一定/必然/绝对"
+
+最后附上2个建议追问（JSON格式）：
+\`\`\`json
+{"suggested_questions": ["追问1", "追问2"]}
+\`\`\`
 `
 }
 

@@ -74,9 +74,9 @@ ${prevContext ? `【前期追问】\n${prevContext}` : ''}
 用户的具体追问：${question}
 
 回答要求（严格限制）：
-1. 必须简短！字数控制在 100-150 字以内。
+1. 深度分析！字数控制在 100-200 字以内。
 2. 直接切入重点，不要寒暄。
-3. 结合牌面给出一个核心洞察。
+3. 结合牌面给出一个核心洞察，并详细阐述逻辑。
 4. ${turnCountRef.current < 2
                 ? `最后给出 2 个建议追问（JSON格式）：\n\`\`\`json\n{"suggested_questions": ["问题1", "问题2"]}\n\`\`\``
                 : '最后一次追问，无需建议。'}
@@ -141,12 +141,18 @@ ${prevContext ? `【前期追问】\n${prevContext}` : ''}
             try {
                 if (abortController.signal.aborted) break
 
-                const response = await fetch('/api/gemini', {
+                const response = await fetch('/api/gemini?fast=1', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         contents: [{ role: 'user', parts: [{ text: systemPrompt }] }],
-                        generationConfig: { temperature: 0.7, maxOutputTokens: 800 }
+                        safetySettings: [
+                            { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_LOW_AND_ABOVE' },
+                            { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_LOW_AND_ABOVE' },
+                            { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_LOW_AND_ABOVE' },
+                            { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_LOW_AND_ABOVE' }
+                        ],
+                        generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
                     }),
                     signal: abortController.signal,
                 })

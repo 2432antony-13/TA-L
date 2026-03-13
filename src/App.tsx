@@ -125,8 +125,8 @@ function AppContent() {
 
     try {
       const positions = ['过去', '现在', '未来']
-      // getReading 现在返回 void，数据通过 result 实时更新
-      await getReading({
+      // getReading 现在返回后端保存的 record.id，用于追问关联
+      const savedId = await getReading({
         cards: drawnCards.map((dc, i) => ({
           name: dc.card.name,
           isReversed: dc.isReversed,
@@ -135,8 +135,8 @@ function AppContent() {
         question: q,
         personality: personality
       })
-      // 流式结束后，生成一个 sessionId 用于追问关联
-      setSessionId(crypto.randomUUID())
+      // 使用后端真实的 record.id 作为 sessionId
+      setSessionId(savedId || crypto.randomUUID())
     } catch (error) {
       console.error('解读失败:', error)
       alert(`API 请求失败: ${error instanceof Error ? error.message : '未知错误'}\n请检查网络或 API Key。`)
