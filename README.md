@@ -1,73 +1,63 @@
-# React + TypeScript + Vite
+# 🔮 TA-L — AI Tarot Reading for the Digital Age
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Live Demo → [taro24.fun](https://www.taro24.fun)**
 
-Currently, two official plugins are available:
+TA-L is an open-source AI-powered tarot reading web app that blends personality psychology with traditional tarot to deliver personalized, emotionally resonant readings.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## ✨ Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Personality-Driven Readings** — Users choose between rational or emotional response modes, shaping how the AI interprets their cards
+- **3-Card Spread** — Past · Present · Future layout with AI-generated narrative connecting all three cards
+- **Emotional Support Focus** — Responses are designed to provide both actionable advice and genuine emotional value
+- **Powered by Google Gemini API** — Fast, context-aware interpretations for each unique reading
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🎯 Who Is This For?
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+People who want more than a random fortune — users who seek self-reflection, emotional clarity, and a personalized experience that adapts to how they think and feel.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🛠️ Tech Stack
+
+- **Frontend**: React + Vite + TypeScript
+- **Styling**: Tailwind CSS
+- **AI**: Google Gemini API
+- **Deployment**: Vercel
+
+---
+
+## 🚀 Getting Started
+```bash
+git clone https://github.com/2432antony-13/TA-L.git
+cd TA-L
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Create a `.env` file in the root directory:
 ```
+GEMINI_API_KEY=your_api_key_here
+```
+
+Then run:
+```bash
+npm run dev
+```
+
+---
+
+## 🗺️ Roadmap
+
+- [ ] Anthropic Claude API integration for deeper narrative readings
+- [ ] More card spreads (Celtic Cross, relationship readings)
+- [ ] Reading history & personal journal
+- [ ] Multi-language support
+
+---
+
+## 📄 License
+
+MIT License — see [LICENSE](./LICENSE) for details.
