@@ -9,6 +9,7 @@ interface TarotReadingRequest {
     }[]
     question: string
     personality: 'T' | 'F' | null  // 用户性格类型
+    interviewProfile?: string  // ENTJ 访谈生成的个性画像
 }
 
 interface UseGeminiAPIResult {
@@ -299,7 +300,20 @@ function buildTarotPrompt(request: TarotReadingRequest): string {
         return `${positions[index]}位：${card.name}（${card.isReversed ? '逆位' : '正位'}）`
     }).join('\n')
 
-    return basePrompt(request.question, cardDescriptions)
+    let prompt = basePrompt(request.question, cardDescriptions)
+
+    // 如果有访谈画像，在 # Task 前注入
+    if (request.interviewProfile) {
+        const profileBlock = `
+## 用户个性画像（来自访谈）
+${request.interviewProfile}
+
+> 请将以上画像作为理解用户的背景参考，在解读中自然地融入对用户性格特质的理解和共鸣。不要直接复述画像内容，而是让你的语言风格、建议方向和关注重点自然地贴合这个人的特质。
+`
+        prompt = prompt.replace('# Task', profileBlock + '\n# Task')
+    }
+
+    return prompt
 }
 
 function buildPromptForT(question: string, cardDescriptions: string): string {

@@ -13,6 +13,7 @@ import {
   GuidanceCharacter,
   HistorySidebar,
   VideoOverlay,
+  ENTJInterview,
 } from './components'
 import { QuestionInput } from './components/QuestionInput'
 import { PersonalitySelector, type PersonalityType } from './components/PersonalitySelector'
@@ -20,7 +21,7 @@ import { GestureProvider, useGesture } from './context/GestureContext'
 import { TarotProvider } from './context/TarotContext'
 import { useGeminiAPI } from './hooks/useGeminiAPI'
 
-type AppPhase = 'IDLE' | 'PERSONALITY_SELECTION' | 'QUESTION_INPUT' | 'SHUFFLING' | 'DRAWING' | 'CARD_REVEAL' | 'READING'
+type AppPhase = 'IDLE' | 'PERSONALITY_SELECTION' | 'ENTJ_INTERVIEW' | 'QUESTION_INPUT' | 'SHUFFLING' | 'DRAWING' | 'CARD_REVEAL' | 'READING'
 
 function AppContent() {
   const [phase, setPhase] = useState<AppPhase>('IDLE')
@@ -33,6 +34,7 @@ function AppContent() {
   const [luckyNumber, setLuckyNumber] = useState('')
   const [isHistoryOpen, setIsHistoryOpen] = useState(false)
   const [sessionId, setSessionId] = useState<string | null>(null)
+  const [interviewProfile, setInterviewProfile] = useState<string | null>(null)
 
   const inputRef = useRef<HTMLInputElement>(null)
   const jumpToCardRef = useRef<((index: number) => void) | null>(null)
@@ -76,9 +78,26 @@ function AppContent() {
     }
   }, [phase])
 
-  // 处理性格选择
+  // 处理性格选择（直接占卜，跳过访谈）
   const handlePersonalitySelect = useCallback((type: PersonalityType) => {
     setPersonality(type)
+    setPhase('QUESTION_INPUT')
+  }, [])
+
+  // 处理进入 ENTJ 访谈
+  const handleStartInterview = useCallback((type: PersonalityType) => {
+    setPersonality(type)
+    setPhase('ENTJ_INTERVIEW')
+  }, [])
+
+  // 访谈完成，保存画像
+  const handleInterviewComplete = useCallback((profile: string) => {
+    setInterviewProfile(profile)
+    setPhase('QUESTION_INPUT')
+  }, [])
+
+  // 访谈跳过
+  const handleInterviewSkip = useCallback(() => {
     setPhase('QUESTION_INPUT')
   }, [])
 
@@ -133,7 +152,8 @@ function AppContent() {
           position: positions[i]
         })),
         question: q,
-        personality: personality
+        personality: personality,
+        interviewProfile: interviewProfile ?? undefined
       })
       // 使用后端真实的 record.id 作为 sessionId
       setSessionId(savedId || crypto.randomUUID())
@@ -141,7 +161,7 @@ function AppContent() {
       console.error('解读失败:', error)
       alert(`API 请求失败: ${error instanceof Error ? error.message : '未知错误'}\n请检查网络或 API Key。`)
     }
-  }, [drawnCards, getReading, personality])
+  }, [drawnCards, getReading, personality, interviewProfile])
 
 
   // 重置开始新一轮
@@ -153,6 +173,7 @@ function AppContent() {
     resetResult()  // 重置 API 结果，避免显示旧数据
     setPersonality(null)
     setSessionId(null)
+    setInterviewProfile(null)
     shuffleTriggeredRef.current = false
   }, [resetResult])
 
@@ -265,7 +286,18 @@ function AppContent() {
 
         {/* PERSONALITY_SELECTION 阶段 - 性格选择 */}
         {phase === 'PERSONALITY_SELECTION' && (
-          <PersonalitySelector onSelect={handlePersonalitySelect} />
+          <PersonalitySelector
+            onSelect={handlePersonalitySelect}
+            onStartInterview={handleStartInterview}
+          />
+        )}
+
+        {/* ENTJ_INTERVIEW 阶段 - 人格访谈 */}
+        {phase === 'ENTJ_INTERVIEW' && (
+          <ENTJInterview
+            onComplete={handleInterviewComplete}
+            onSkip={handleInterviewSkip}
+          />
         )}
 
         {/* QUESTION_INPUT 阶段 - 问题输入 */}
