@@ -263,7 +263,7 @@ export async function generatePersonalityProfileAsync(
       return `【问题${idx + 1}】：${q.question}\n【用户的选择】：${selectedText}`
     }).join('\n\n')
 
-    const prompt = `你是一位精通MBTI和深层人性洞察的专家。用户刚刚完成了一份针对 ENTJ/T型 偏好的 10道题访谈。记录如下：
+    const prompt = `你是一位精通MBTI和深层人性洞察的专家。用户刚刚完成了一份由10道深度心理探针问题组成的测试访谈。记录如下：
 
 ${qaDetails}
 
