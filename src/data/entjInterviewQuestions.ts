@@ -247,6 +247,101 @@ function getDefaultImpression(socialLabel: string, emotionLabel: string, driveLa
   return `这是一个有着丰富内在世界的人，${socialLabel.includes('主动') ? '外在充满行动力' : '外在看似随和'}，内心有着自己清晰的标准和坚持。在关系中${driveLabel.includes('连接') ? '渴望真正的灵魂共鸣' : '追求真实而舒适的相处'}。`
 }
 
+export async function generatePersonalityProfileAsync(
+  answers: InterviewAnswer[],
+  onChunk?: (text: string) => void
+): Promise<string> {
+  // 先保留原来的本地生成逻辑作为 fallback
+  const fallbackProfile = generatePersonalityProfile(answers)
+
+  // 构建传给 Gemini 的 prompt
+  try {
+    const qaDetails = answers.map((ans, idx) => {
+      const q = interviewQuestions.find(i => i.id === ans.questionId)
+      if (!q) return ''
+      const selectedText = q.options[ans.selectedOption].text
+      return `【问题${idx + 1}】：${q.question}\n【用户的选择】：${selectedText}`
+    }).join('\n\n')
+
+    const prompt = `你是一位精通MBTI和深层人性洞察的专家。用户刚刚完成了一份针对 ENTJ/T型 偏好的 10道题访谈。记录如下：
+
+${qaDetails}
+
+**【极速响应指令：非常重要】**
+**绝对禁止使用 <Thinking> 标签！不要输出任何推理过程！不要任何开场白或结束语！直接输出最终结果！**
+
+请直接生成一份独一无二的专属【个性画像】。必须严格按照以下格式纯文本输出：
+
+[用户个性画像]
+社交倾向: [四字词语] — [一句话解释（15字以内）]
+决策风格: [四字词语] — [一句话解释]
+情感表达: [四字词语] — [一句话解释]
+应对方式: [四字词语] — [一句话解释]
+核心驱动: [四字词语] — [一句话解释]
+
+综合印象: [一段60-80字的话。极其敏锐、深刻地描绘出这个人的真实精神面貌，要有神算感，直接点出表面坚强等伪装下的真实诉求和隐秘痛点。]
+`
+
+    let deviceId = localStorage.getItem('tarot_device_uuid')
+    if (!deviceId) {
+      deviceId = crypto.randomUUID()
+      localStorage.setItem('tarot_device_uuid', deviceId)
+    }
+
+    const response = await fetch('/api/gemini', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Device-Id': deviceId
+      },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+            temperature: 0.8,
+            maxOutputTokens: 1000,
+        }
+      })
+    })
+
+    if (!response.body) throw new Error('No body')
+    
+    // 我们只需要非流式的完整文本，这里简单把流合并
+    const reader = response.body.getReader()
+    const decoder = new TextDecoder()
+    let text = ''
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+      const chunk = decoder.decode(value, { stream: true })
+      const lines = chunk.split('\n')
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const jsonStr = line.slice(6).trim()
+          if (jsonStr === '[DONE]' || !jsonStr) continue
+          try {
+            const data = JSON.parse(jsonStr)
+            const part = data.candidates?.[0]?.content?.parts?.[0]?.text
+            if (part) {
+              text += part
+              if (onChunk) onChunk(part)
+            }
+          } catch (e) { /* ignore */ }
+        }
+      }
+    }
+
+    if (text.trim().length > 50 && text.includes('综合印象')) {
+      return text.trim()
+    }
+    console.warn("Gemini output invalid format, fallback to local generation.")
+    return fallbackProfile
+
+  } catch (error) {
+    console.error("Dynamic profile generation failed, using fallback:", error)
+    return fallbackProfile
+  }
+}
+
 export function generatePersonalityProfile(answers: InterviewAnswer[]): string {
   // 按维度统计 traitTags 出现频率
   const dimensionTagCounts: Record<string, Record<string, number>> = {}

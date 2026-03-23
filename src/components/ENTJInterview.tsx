@@ -3,7 +3,7 @@ import { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   interviewQuestions,
-  generatePersonalityProfile,
+  generatePersonalityProfileAsync,
   type InterviewAnswer,
 } from '../data/entjInterviewQuestions'
 
@@ -17,6 +17,7 @@ export function ENTJInterview({ onComplete, onSkip }: ENTJInterviewProps) {
   const [answers, setAnswers] = useState<InterviewAnswer[]>([])
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [showResult, setShowResult] = useState(false)
+  const [isGenerating, setIsGenerating] = useState(false)
   const [profileText, setProfileText] = useState('')
 
   const currentQuestion = interviewQuestions[currentIndex]
@@ -39,16 +40,25 @@ export function ENTJInterview({ onComplete, onSkip }: ENTJInterviewProps) {
       const newAnswers = [...answers, newAnswer]
       setAnswers(newAnswers)
 
-      setTimeout(() => {
+      setTimeout(async () => {
         if (currentIndex < interviewQuestions.length - 1) {
           setCurrentIndex((prev) => prev + 1)
           setIsTransitioning(false)
         } else {
-          // 最后一题，生成画像
-          const profile = generatePersonalityProfile(newAnswers)
-          setProfileText(profile)
-          setShowResult(true)
-          setIsTransitioning(false)
+          // 最后一题，生成画像，使用转圈圈等待
+          setIsGenerating(true)
+          
+          try {
+            const profile = await generatePersonalityProfileAsync(newAnswers)
+            setProfileText(profile)
+          } catch (err) {
+             console.error(err)
+             // 失败可以做本地回退，由于 async 函数里已经做了 fallback 这里直接 set 即可
+          } finally {
+             setShowResult(true)
+             setIsGenerating(false)
+             setIsTransitioning(false)
+          }
         }
       }, 400)
     },
@@ -72,7 +82,19 @@ export function ENTJInterview({ onComplete, onSkip }: ENTJInterviewProps) {
         animate={{ scale: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 200 }}
       >
-        {!showResult ? (
+        {isGenerating ? (
+          <motion.div 
+            className="flex flex-col items-center justify-center p-12 min-h-[300px]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <div className="w-10 h-10 rounded-full border-t-2 border-r-2 border-neon-gold animate-spin mb-6"></div>
+            <p className="text-neon-gold animate-pulse text-base tracking-widest text-center">
+              Gemini 正在深潜你的潜意识<br/>
+              <span className="text-xs text-gray-500 mt-2 block">为您提炼您的画像...</span>
+            </p>
+          </motion.div>
+        ) : !showResult ? (
           <>
             {/* 进度条 */}
             <div className="w-full h-1 bg-white/10 rounded-full mb-6 overflow-hidden">
