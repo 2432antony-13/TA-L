@@ -1,5 +1,5 @@
-// entjInterviewQuestions.ts - ENTJ 访谈模板问题数据 + 画像生成
-// 问题来源：docs/mbti_social_interview_templates.md ENTJ 部分
+// interviewQuestions.ts - 通用人格访谈问题数据 + 画像生成
+// 问题来源：docs/mbti_social_interview_templates.md（通用化版本）
 
 export interface InterviewOption {
   text: string

@@ -7,9 +7,10 @@ export type PersonalityType = 'T' | 'F'
 interface PersonalitySelectorProps {
     onSelect: (type: PersonalityType) => void
     onStartInterview?: (type: PersonalityType) => void
+    existingProfile?: string | null
 }
 
-export function PersonalitySelector({ onSelect, onStartInterview }: PersonalitySelectorProps) {
+export function PersonalitySelector({ onSelect, onStartInterview, existingProfile }: PersonalitySelectorProps) {
     const [selectedType, setSelectedType] = useState<PersonalityType | null>(null)
 
     return (
@@ -145,7 +146,7 @@ export function PersonalitySelector({ onSelect, onStartInterview }: PersonalityS
                                     animate={{ y: 0, opacity: 1 }}
                                     transition={{ delay: 0.2 }}
                                 >
-                                    想让 AI 更懂你吗？可以先做一个简短的性格访谈
+                                    想让 AI 更懂你吗？{existingProfile ? '你已有专属画像，也可以重新测试' : '可以先做一个简短的性格访谈'}
                                 </motion.p>
                             </div>
 
@@ -165,7 +166,10 @@ export function PersonalitySelector({ onSelect, onStartInterview }: PersonalityS
                                         <h3 className="text-lg font-bold text-starlight">直接占卜</h3>
                                     </div>
                                     <p className="text-sm text-gray-400 leading-relaxed">
-                                        跳过访谈，直接进入提问和抽牌环节
+                                        {existingProfile
+                                            ? '使用已有画像，直接进入提问和抽牌环节'
+                                            : '跳过访谈，直接进入提问和抽牌环节'
+                                        }
                                     </p>
                                     <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
                                         <span className="text-gray-400 text-sm">继续 →</span>
@@ -184,14 +188,17 @@ export function PersonalitySelector({ onSelect, onStartInterview }: PersonalityS
                                         whileTap={{ scale: 0.98 }}
                                     >
                                         <div className="flex items-center gap-3 mb-3">
-                                            <span className="text-3xl">🪞</span>
+                                            <span className="text-3xl">{existingProfile ? '🔄' : '🪞'}</span>
                                             <div>
-                                                <h3 className="text-lg font-bold text-neon-gold">人格访谈</h3>
-                                                <p className="text-xs text-neon-gold/50">10 个快速问答</p>
+                                                <h3 className="text-lg font-bold text-neon-gold">{existingProfile ? '再测一次' : '人格访谈'}</h3>
+                                                <p className="text-xs text-neon-gold/50">{existingProfile ? '重新生成你的个性画像' : '10 个快速问答'}</p>
                                             </div>
                                         </div>
                                         <p className="text-sm text-gray-400 leading-relaxed">
-                                            用 <strong className="text-neon-gold/80">1 分钟</strong> 回答 10 个问题，AI 将为你生成专属性格画像，让解读更加个性化
+                                            {existingProfile
+                                                ? '重新回答 10 个问题，更新你的个性画像'
+                                                : <>用 <strong className="text-neon-gold/80">1 分钟</strong> 回答 10 个问题，AI 将为你生成专属性格画像，让解读更加个性化</>
+                                            }
                                         </p>
                                         <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <span className="text-neon-gold text-sm">开始 →</span>

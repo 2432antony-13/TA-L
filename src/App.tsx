@@ -13,7 +13,7 @@ import {
   GuidanceCharacter,
   HistorySidebar,
   VideoOverlay,
-  ENTJInterview,
+  PersonalityInterview,
 } from './components'
 import { QuestionInput } from './components/QuestionInput'
 import { PersonalitySelector, type PersonalityType } from './components/PersonalitySelector'
@@ -21,7 +21,7 @@ import { GestureProvider, useGesture } from './context/GestureContext'
 import { TarotProvider } from './context/TarotContext'
 import { useGeminiAPI } from './hooks/useGeminiAPI'
 
-type AppPhase = 'IDLE' | 'PERSONALITY_SELECTION' | 'ENTJ_INTERVIEW' | 'QUESTION_INPUT' | 'SHUFFLING' | 'DRAWING' | 'CARD_REVEAL' | 'READING'
+type AppPhase = 'IDLE' | 'PERSONALITY_SELECTION' | 'INTERVIEW' | 'QUESTION_INPUT' | 'SHUFFLING' | 'DRAWING' | 'CARD_REVEAL' | 'READING'
 
 function AppContent() {
   const [phase, setPhase] = useState<AppPhase>('IDLE')
@@ -34,7 +34,9 @@ function AppContent() {
   const [luckyNumber, setLuckyNumber] = useState('')
   const [isHistoryOpen, setIsHistoryOpen] = useState(false)
   const [sessionId, setSessionId] = useState<string | null>(null)
-  const [interviewProfile, setInterviewProfile] = useState<string | null>(null)
+  const [interviewProfile, setInterviewProfile] = useState<string | null>(
+    () => localStorage.getItem('tarot_interview_profile')
+  )
 
   const inputRef = useRef<HTMLInputElement>(null)
   const jumpToCardRef = useRef<((index: number) => void) | null>(null)
@@ -84,15 +86,16 @@ function AppContent() {
     setPhase('QUESTION_INPUT')
   }, [])
 
-  // 处理进入 ENTJ 访谈
+  // 处理进入人格访谈
   const handleStartInterview = useCallback((type: PersonalityType) => {
     setPersonality(type)
-    setPhase('ENTJ_INTERVIEW')
+    setPhase('INTERVIEW')
   }, [])
 
-  // 访谈完成，保存画像
+  // 访谈完成，保存画像到 state 和 localStorage
   const handleInterviewComplete = useCallback((profile: string) => {
     setInterviewProfile(profile)
+    localStorage.setItem('tarot_interview_profile', profile)
     setPhase('QUESTION_INPUT')
   }, [])
 
@@ -164,7 +167,7 @@ function AppContent() {
   }, [drawnCards, getReading, personality, interviewProfile])
 
 
-  // 重置开始新一轮
+  // 重置开始新一轮（保留 interviewProfile，不清除画像）
   const handleReset = useCallback(() => {
     setPhase('PERSONALITY_SELECTION')
     setDrawnCards([])
@@ -173,7 +176,6 @@ function AppContent() {
     resetResult()  // 重置 API 结果，避免显示旧数据
     setPersonality(null)
     setSessionId(null)
-    setInterviewProfile(null)
     shuffleTriggeredRef.current = false
   }, [resetResult])
 
@@ -289,12 +291,13 @@ function AppContent() {
           <PersonalitySelector
             onSelect={handlePersonalitySelect}
             onStartInterview={handleStartInterview}
+            existingProfile={interviewProfile}
           />
         )}
 
-        {/* ENTJ_INTERVIEW 阶段 - 人格访谈 */}
-        {phase === 'ENTJ_INTERVIEW' && (
-          <ENTJInterview
+        {/* INTERVIEW 阶段 - 人格访谈 */}
+        {phase === 'INTERVIEW' && (
+          <PersonalityInterview
             onComplete={handleInterviewComplete}
             onSkip={handleInterviewSkip}
           />

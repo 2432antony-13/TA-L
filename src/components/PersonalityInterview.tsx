@@ -1,18 +1,18 @@
-// ENTJInterview.tsx - ENTJ 人格访谈组件
+// PersonalityInterview.tsx - 通用人格访谈组件
 import { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   interviewQuestions,
   generatePersonalityProfileAsync,
   type InterviewAnswer,
-} from '../data/entjInterviewQuestions'
+} from '../data/interviewQuestions'
 
-interface ENTJInterviewProps {
+interface PersonalityInterviewProps {
   onComplete: (profile: string) => void
   onSkip: () => void
 }
 
-export function ENTJInterview({ onComplete, onSkip }: ENTJInterviewProps) {
+export function PersonalityInterview({ onComplete, onSkip }: PersonalityInterviewProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [answers, setAnswers] = useState<InterviewAnswer[]>([])
   const [isTransitioning, setIsTransitioning] = useState(false)
@@ -53,7 +53,6 @@ export function ENTJInterview({ onComplete, onSkip }: ENTJInterviewProps) {
             setProfileText(profile)
           } catch (err) {
              console.error(err)
-             // 失败可以做本地回退，由于 async 函数里已经做了 fallback 这里直接 set 即可
           } finally {
              setShowResult(true)
              setIsGenerating(false)
@@ -239,4 +238,4 @@ export function ENTJInterview({ onComplete, onSkip }: ENTJInterviewProps) {
   )
 }
 
-export default ENTJInterview
+export default PersonalityInterview
