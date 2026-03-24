@@ -1,6 +1,7 @@
 // PersonalitySelector.tsx - MBTI T/F 性格选择组件
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { ProfileModal } from './ProfileModal'
 
 export type PersonalityType = 'T' | 'F'
 
@@ -12,6 +13,7 @@ interface PersonalitySelectorProps {
 
 export function PersonalitySelector({ onSelect, onStartInterview, existingProfile }: PersonalitySelectorProps) {
     const [selectedType, setSelectedType] = useState<PersonalityType | null>(null)
+    const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
 
     return (
         <motion.div
@@ -131,7 +133,16 @@ export function PersonalitySelector({ onSelect, onStartInterview, existingProfil
                             exit={{ opacity: 0 }}
                         >
                             {/* 第二步：选择继续占卜或进入访谈 */}
-                            <div className="text-center mb-8">
+                            <div className="relative text-center mb-8">
+                                {existingProfile && (
+                                    <button 
+                                        onClick={() => setIsProfileModalOpen(true)}
+                                        className="absolute -top-4 right-0 px-3 py-1.5 bg-white/5 border border-neon-gold/30 rounded-full text-xs text-neon-gold hover:bg-neon-gold/10 hover:border-neon-gold/60 transition-all flex items-center gap-1"
+                                    >
+                                        <span className="text-sm">👁️</span> 
+                                        我的画像
+                                    </button>
+                                )}
                                 <motion.h2
                                     className="text-2xl md:text-3xl font-bold text-neon-gold mb-3"
                                     initial={{ y: -20, opacity: 0 }}
@@ -220,6 +231,15 @@ export function PersonalitySelector({ onSelect, onStartInterview, existingProfil
                     )}
                 </AnimatePresence>
             </motion.div>
+
+            {/* 历史画像模态框 */}
+            {existingProfile && (
+                <ProfileModal 
+                    isOpen={isProfileModalOpen}
+                    onClose={() => setIsProfileModalOpen(false)}
+                    profileText={existingProfile}
+                />
+            )}
         </motion.div>
     )
 }
