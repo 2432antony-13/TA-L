@@ -1,6 +1,6 @@
 // QuestionInput.tsx - 问题输入组件
-import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface QuestionInputProps {
     onSubmit: (question: string) => void
@@ -8,10 +8,30 @@ interface QuestionInputProps {
 
 export function QuestionInput({ onSubmit }: QuestionInputProps) {
     const [question, setQuestion] = useState('')
+    const [limitError, setLimitError] = useState('')
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
         if (question.trim()) {
+            const today = new Date().toLocaleDateString()
+            const storageKey = 'tarot_daily_usage'
+            const storedItem = localStorage.getItem(storageKey)
+            let usage = storedItem ? JSON.parse(storedItem) : { date: today, count: 0 }
+            
+            if (usage.date !== today) {
+                usage = { date: today, count: 0 }
+            }
+
+            if (usage.count >= 20) {
+                setLimitError(`今日占卜次数已达星空上限 (${usage.count}/20) ✨ 请明日再来探索吧`)
+                return
+            }
+
+            // 更新使用次数
+            usage.count += 1
+            localStorage.setItem(storageKey, JSON.stringify(usage))
+            setLimitError('')
+            
             onSubmit(question.trim())
         }
     }
@@ -61,7 +81,10 @@ export function QuestionInput({ onSubmit }: QuestionInputProps) {
                     >
                         <textarea
                             value={question}
-                            onChange={(e) => setQuestion(e.target.value)}
+                            onChange={(e) => {
+                                setQuestion(e.target.value)
+                                if (limitError) setLimitError('') // 重新输入时清除错误提升体验
+                            }}
                             placeholder="例如：我的事业发展方向是什么？我和TA的关系会如何发展？"
                             className="w-full h-40 px-6 py-4 bg-mystic-dark/80 border border-white/10 rounded-2xl text-starlight placeholder-gray-500 resize-none focus:outline-none focus:border-neon-gold/50 focus:ring-2 focus:ring-neon-gold/30 transition-all text-base pointer-events-auto"
                             autoFocus
@@ -73,9 +96,22 @@ export function QuestionInput({ onSubmit }: QuestionInputProps) {
                         <div className="absolute bottom-0 right-0 w-6 h-6 border-r-2 border-b-2 border-neon-gold/40 rounded-br-xl" />
                     </motion.div>
 
+                    <AnimatePresence>
+                        {limitError && (
+                            <motion.div
+                                initial={{ opacity: 0, y: -10, height: 0 }}
+                                animate={{ opacity: 1, y: 0, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                className="text-red-400 text-sm text-center font-medium bg-red-900/20 border border-red-500/20 rounded-lg py-3 px-4"
+                            >
+                                {limitError}
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
                     <motion.button
                         type="submit"
-                        disabled={!question.trim()}
+                        disabled={!question.trim() || !!limitError}
                         className="w-full py-4 bg-gradient-to-r from-neon-gold-dim to-neon-gold text-black font-bold text-lg rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-neon transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
