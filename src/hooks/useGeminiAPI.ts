@@ -132,12 +132,13 @@ export function useGeminiAPI(): UseGeminiAPIResult {
                 await processGeminiStream(reader, (textDelta) => {
                     fullText += textDelta
 
-                    const thinkingMatch = fullText.match(/<Thinking>([\s\S]*?)<\/Thinking>/)
+                    const thinkingMatch = fullText.match(/<[Tt]hinking[^>]*>([\s\S]*?)<\/[Tt]hinking>/i)
                     if (thinkingMatch) {
                         finalThinking = thinkingMatch[1]
-                        finalReading = fullText.replace(/<Thinking>[\s\S]*?<\/Thinking>/, '').trim()
-                    } else if (fullText.includes('<Thinking>')) {
-                        const start = fullText.indexOf('<Thinking>') + 10
+                        finalReading = fullText.replace(/<[Tt]hinking[^>]*>[\s\S]*?<\/[Tt]hinking>/i, '').trim()
+                    } else if (/<[Tt]hinking[^>]*>/i.test(fullText)) {
+                        const match = fullText.match(/<[Tt]hinking[^>]*>/i)
+                        const start = match ? match.index! + match[0].length : 0
                         finalThinking = fullText.slice(start)
                         finalReading = ''
                     } else {
@@ -185,6 +186,15 @@ export function useGeminiAPI(): UseGeminiAPIResult {
                     setIsLoading(false)
                     return null
                 }
+                
+                if (err.message === '流式读取超时') {
+                    clearTimeout(globalTimeout)
+                    setError('流式读取超时，服务器响应过慢')
+                    setIsStreaming(false)
+                    setIsLoading(false)
+                    return null
+                }
+
                 lastError = err
                 if (attempt < MAX_RETRIES) {
                     const waitMs = attempt * 2000
@@ -250,8 +260,8 @@ async function processGeminiStream(
     while (true) {
         // 为每个 chunk 设置超时，防止流挂起
         const readPromise = reader.read()
-        const timeoutPromise = new Promise<{ done: true, value: undefined }>((resolve) => {
-            setTimeout(() => resolve({ done: true, value: undefined }), CHUNK_TIMEOUT)
+        const timeoutPromise = new Promise<never>((_, reject) => {
+            setTimeout(() => reject(new Error('流式读取超时')), CHUNK_TIMEOUT)
         })
 
         const { done, value } = await Promise.race([readPromise, timeoutPromise])

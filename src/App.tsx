@@ -20,6 +20,7 @@ import { PersonalitySelector, type PersonalityType } from './components/Personal
 import { GestureProvider, useGesture } from './context/GestureContext'
 import { TarotProvider } from './context/TarotContext'
 import { useGeminiAPI } from './hooks/useGeminiAPI'
+import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 
 type AppPhase = 'IDLE' | 'PERSONALITY_SELECTION' | 'INTERVIEW' | 'QUESTION_INPUT' | 'SHUFFLING' | 'DRAWING' | 'CARD_REVEAL' | 'READING'
 
@@ -38,7 +39,6 @@ function AppContent() {
     () => localStorage.getItem('tarot_interview_profile')
   )
 
-  const inputRef = useRef<HTMLInputElement>(null)
   const jumpToCardRef = useRef<((index: number) => void) | null>(null)
   const { handState, isEnabled } = useGesture()
   // 使用更新后的 hook，解构 result 和 isStreaming
@@ -176,32 +176,10 @@ function AppContent() {
     resetResult()  // 重置 API 结果，避免显示旧数据
     setPersonality(null)
     setSessionId(null)
+    setLuckyNumber('')
+    setIsFlipping(false)
     shuffleTriggeredRef.current = false
   }, [resetResult])
-
-
-  // 键盘控制
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (phase === 'CARD_REVEAL' && e.key === 'Enter') {
-      handleConfirmCard()
-      return
-    }
-    if (phase === 'DRAWING' && e.key === ' ') {
-      e.preventDefault()
-      handleSelectCard(0)
-    }
-    if (phase === 'IDLE' && e.key === ' ') {
-      e.preventDefault()
-      handleStartDrawing()
-    }
-  }
-
-  useEffect(() => {
-    // READING 和 QUESTION_INPUT 阶段需要让 textarea 获得焦点，不要抢占
-    if (phase !== 'READING' && phase !== 'QUESTION_INPUT') {
-      inputRef.current?.focus()
-    }
-  }, [phase])
 
 
   // 视频引导逻辑
@@ -211,6 +189,8 @@ function AppContent() {
   const handleIntroComplete = () => {
     setShowIntro(false)
   }
+
+  useKeyboardShortcuts(phase, handleStartDrawing, handleSelectCard, handleConfirmCard)
 
   return (
     <div className={`relative w-full flex flex-col items-center ${phase === 'QUESTION_INPUT' || phase === 'READING' ? '' : 'select-none'} ${phase === 'READING' ? 'h-screen overflow-y-auto overflow-x-hidden' : 'overflow-hidden justify-center h-screen'
@@ -386,18 +366,6 @@ function AppContent() {
           />
         )}
       </div>
-
-      {/* 隐藏输入框 - 键盘控制（仅桌面端，避免手机弹出键盘） */}
-      {phase !== 'READING' && phase !== 'QUESTION_INPUT' && phase !== 'DRAWING' && (
-        <input
-          ref={inputRef}
-          autoFocus
-          className="hidden md:block absolute opacity-0 pointer-events-none"
-          tabIndex={-1}
-          onKeyDown={handleKeyDown}
-          onBlur={() => inputRef.current?.focus()}
-        />
-      )}
 
       {/* 手势光标 */}
       <HandCursor />
