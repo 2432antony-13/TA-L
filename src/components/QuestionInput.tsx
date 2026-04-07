@@ -1,5 +1,5 @@
 // QuestionInput.tsx - 问题输入组件
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface QuestionInputProps {
