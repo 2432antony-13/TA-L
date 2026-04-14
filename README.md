@@ -2,6 +2,8 @@
 
 **Live Demo → [taro24.fun](https://www.taro24.fun)**
 
+**English** | [简体中文](./README_zh.md)
+
 TA-L is an open-source AI-powered tarot reading web app that blends personality psychology with traditional tarot to deliver personalized, emotionally resonant readings.
 
 ---
