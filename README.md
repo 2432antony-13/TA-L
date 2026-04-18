@@ -1,65 +1,97 @@
-# 🔮 TA-L — AI Tarot Reading for the Digital Age
+# 🔮 MysticGesticTarot
 
-**Live Demo → [taro24.fun](https://www.taro24.fun)**
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Vibecoding](https://img.shields.io/badge/Developed%20Via-Vibecoding-blueviolet.svg)](#)
+[![Tech Stack: React & TS](https://img.shields.io/badge/Stack-React%20%7C%20TypeScript%20%7C%20Tailwind-blue.svg)](#)
 
-**English** | [简体中文](./README_zh.md)
-
-TA-L is an open-source AI-powered tarot reading web app that blends personality psychology with traditional tarot to deliver personalized, emotionally resonant readings.
-
----
-
-## ✨ Features
-
-- **Personality-Driven Readings** — Users choose between rational or emotional response modes, shaping how the AI interprets their cards
-- **3-Card Spread** — Past · Present · Future layout with AI-generated narrative connecting all three cards
-- **Emotional Support Focus** — Responses are designed to provide both actionable advice and genuine emotional value
-- **Powered by Google Gemini API** — Fast, context-aware interpretations for each unique reading
+> An immersive, gesture-controlled interactive Tarot experience that bridges ancient cultural heritage with modern web technologies, built entirely through "Vibecoding" (LLM-assisted programming) by a liberal arts student in a cross-cultural context.
 
 ---
 
-## 🎯 Who Is This For?
+## 🎯 OSS Vision & Mission
 
-People who want more than a random fortune — users who seek self-reflection, emotional clarity, and a personalized experience that adapts to how they think and feel.
+**MysticGesticTarot** is not just an interactive divination tool; it is an open-source movement aimed at **Diversity in Tech**. 
+
+Currently, the open-source community is overwhelmingly populated by traditional computer science professionals. This project demonstrates how humanities scholars can utilize natural language programming ("Vibecoding") to build robust, culturally rich, and innovative applications. 
+
+By open-sourcing our core architecture, gesture-recognition workflow, and AI generative prompts, we serve as a **micro-architecture blueprint for non-technical creators** who wish to integrate natural interactive interfaces into their creative projects.
 
 ---
 
-## 🛠️ Tech Stack
+## ✨ Core Features
 
-- **Frontend**: React + Vite + TypeScript
-- **Styling**: Tailwind CSS
-- **AI**: Google Gemini API
-- **Deployment**: Vercel
+1. **Immersive Natural Interaction**: A custom Vision Engine allows users to draw and interact with cards via hand gestures, simulating the tactile connection to fate.
+2. **Classic Heritage, Modern Aesthetics**: Incorporates the classic 1909 Rider-Waite tarot imagery, enhanced through AI upscaling and CSS filter layers for a visually stunning UI.
+3. **Privacy-First Architecture**: We believe mystic experiences should be intimate. All camera inputs and initial gesture processing are handled **100% locally** in the browser ensuring zero visual data upload.
+4. **Cultural Bridge**: Designed and maintained by a Korean international student in a Chinese academic context, emphasizing cross-cultural understanding of western mysticism.
+
+---
+
+## 🏗️ Modular Architecture
+
+```text
+┌─────────────────────────────────────────────────────────┐
+│                    Frontend UI                          │
+│     (Gesture Feedback / Tarot Rendering / CSS Canvas)   │
+└─────────────────────────────────────────────────────────┘
+                            ↑
+┌─────────────────────────────────────────────────────────┐
+│                   Vision Engine                         │
+│     (Local Camera Capture / Hand Tracking / Analytics)  │
+└─────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────┐
+│                     Backend / AI Core                   │
+│      (Generative Interpretations / Logic Controller)    │
+└─────────────────────────────────────────────────────────┘
+```
 
 ---
 
 ## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (v18+)
+- npm or pnpm
+
+### Installation
+
 ```bash
-git clone https://github.com/2432antony-13/TA-L.git
-cd TA-L
+# 1. Clone the repository
+git clone https://github.com/your-username/mystic-gestic-tarot.git
+
+# 2. Navigate to project directory
+cd mystic-gestic-tarot
+
+# 3. Install dependencies
 npm install
-```
 
-Create a `.env` file in the root directory:
-```
-GEMINI_API_KEY=your_api_key_here
-```
-
-Then run:
-```bash
+# 4. Start the development server
 npm run dev
+
+# 5. Build for production
+npm run build
 ```
 
 ---
 
-## 🗺️ Roadmap
+## 🤝 Contributing (The Vibecoding Way)
 
-- [ ] Anthropic Claude API integration for deeper narrative readings
-- [ ] More card spreads (Celtic Cross, relationship readings)
-- [ ] Reading history & personal journal
-- [ ] Multi-language support
+We strongly encourage contributions from students in the **Humanities, Arts, and Social Sciences**. You do not need to be a senior software engineer to contribute.
+
+If you are using tools like Claude, Cursor, or ChatGPT to write code via natural language (Vibecoding), your pull requests are warmly welcomed! 
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingCultureFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingCultureFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingCultureFeature`)
+5. Open a Pull Request
 
 ---
 
-## 📄 License
+## 📜 License
 
-MIT License — see [LICENSE](./LICENSE) for details.
+Distributed under the MIT License. See `LICENSE` for more information.
+
+> *"We are made of star-stuff. We are a way for the cosmos to know itself."* - Inspired by the Fool's Journey.
