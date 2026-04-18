@@ -59,10 +59,10 @@ By open-sourcing our core architecture, gesture-recognition workflow, and AI gen
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-username/mystic-gestic-tarot.git
+git clone https://github.com/2432antony-13/TA-L.git
 
 # 2. Navigate to project directory
-cd mystic-gestic-tarot
+cd TA-L
 
 # 3. Install dependencies
 npm install
