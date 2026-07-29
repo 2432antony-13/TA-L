@@ -97,19 +97,146 @@ function rateLimitPlugin(): PluginOption {
 export default defineConfig(({ mode }) => {
   // 加载 .env 文件中的环境变量（VITE_ 前缀的变量）
   const env = loadEnv(mode, process.cwd(), '')
-  const apiKey = env.VITE_GEMINI_API_KEY || env.GEMINI_API_KEY || ''
-  const model = env.VITE_GEMINI_MODEL || env.GEMINI_MODEL || 'gemini-2.0-flash'
+  const deepseekKey = env.DEEPSEEK_API_KEY || env.VITE_DEEPSEEK_API_KEY || ''
+  const geminiKey = env.VITE_GEMINI_API_KEY || env.GEMINI_API_KEY || ''
+  const geminiModel = env.VITE_GEMINI_MODEL || env.GEMINI_MODEL || 'gemini-2.0-flash'
+  const deepseekModel = env.DEEPSEEK_MODEL || env.VITE_DEEPSEEK_MODEL || 'deepseek-chat'
 
-  if (!apiKey) {
-    console.warn('⚠️ 未找到 GEMINI API Key，本地 /api/gemini 代理将无法工作。')
-    console.warn('   请在项目根目录创建 .env 文件并添加: VITE_GEMINI_API_KEY=你的Key')
+  if (deepseekKey && deepseekKey !== 'your_deepseek_api_key_here') {
+    console.log(`✅ 已加载 DeepSeek API Key，模型: ${deepseekModel}`)
+  } else if (geminiKey) {
+    console.log(`⚠️ 使用 Gemini API Key 作为备用，模型: ${geminiModel}`)
   } else {
-    console.log(`✅ 已加载 API Key，模型: ${model}`)
+    console.warn('⚠️ 未找到有效 API Key (DEEPSEEK_API_KEY / VITE_GEMINI_API_KEY)')
+    console.warn('   请在项目根目录 .env 文件中填写 DEEPSEEK_API_KEY=你的Key')
   }
+
+  // 本地开发 DeepSeek 代理中间件
+  const deepseekMiddlewarePlugin = (): PluginOption => ({
+    name: 'deepseek-proxy-middleware',
+    configureServer(server) {
+      server.middlewares.use(async (req: IncomingMessage, res: ServerResponse, next: () => void) => {
+        if (req.url?.startsWith('/api/gemini') && req.method === 'POST') {
+          const currentDeepseekKey = env.DEEPSEEK_API_KEY || env.VITE_DEEPSEEK_API_KEY || ''
+          if (currentDeepseekKey && currentDeepseekKey !== 'your_deepseek_api_key_here') {
+            let bodyStr = ''
+            req.on('data', chunk => { bodyStr += chunk })
+            req.on('end', async () => {
+              try {
+                const reqJson = JSON.parse(bodyStr || '{}')
+                let prompt = ''
+                if (reqJson.contents && Array.isArray(reqJson.contents)) {
+                  const parts = reqJson.contents.flatMap((c: any) => c.parts || [])
+                  prompt = parts.map((p: any) => p.text).filter(Boolean).join('\n')
+                } else {
+                  prompt = JSON.stringify(reqJson)
+                }
+
+                const dsRes = await fetch('https://api.deepseek.com/chat/completions', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${currentDeepseekKey}`
+                  },
+                  body: JSON.stringify({
+                    model: deepseekModel,
+                    messages: [{ role: 'user', content: prompt }],
+                    stream: true,
+                    temperature: reqJson.generationConfig?.temperature || 0.7,
+                  })
+                })
+
+                if (!dsRes.ok) {
+                  const errText = await dsRes.text()
+                  res.statusCode = dsRes.status
+                  res.setHeader('Content-Type', 'application/json')
+                  res.end(errText)
+                  return
+                }
+
+                res.statusCode = 200
+                res.setHeader('Content-Type', 'text/event-stream; charset=utf-8')
+                res.setHeader('Cache-Control', 'no-cache, no-transform')
+                res.setHeader('Connection', 'keep-alive')
+
+                if (dsRes.body) {
+                  const reader = (dsRes.body as any).getReader()
+                  const decoder = new TextDecoder()
+                  let buffer = ''
+                  let isThinking = false
+                  let hasSentThinkingClose = false
+
+                  while (true) {
+                    const { done, value } = await reader.read()
+                    if (done) break
+                    buffer += decoder.decode(value, { stream: true })
+                    const lines = buffer.split('\n')
+                    buffer = lines.pop() || ''
+
+                    for (const line of lines) {
+                      const trimmed = line.trim()
+                      if (!trimmed) continue
+                      if (trimmed === 'data: [DONE]') {
+                        if (isThinking && !hasSentThinkingClose) {
+                          const closeTag = '\n</Thinking>\n\n'
+                          res.write(`data: ${JSON.stringify({ candidates: [{ content: { parts: [{ text: closeTag }] } }] })}\n\n`)
+                          hasSentThinkingClose = true
+                        }
+                        res.write('data: [DONE]\n\n')
+                        continue
+                      }
+
+                      if (trimmed.startsWith('data: ')) {
+                        try {
+                          const data = JSON.parse(trimmed.slice(6))
+                          const delta = data.choices?.[0]?.delta || {}
+                          let textToEmit = ''
+
+                          if (delta.reasoning_content) {
+                            if (!isThinking) {
+                              isThinking = true
+                              textToEmit += '<Thinking>\n'
+                            }
+                            textToEmit += delta.reasoning_content
+                          }
+
+                          if (delta.content) {
+                            if (isThinking && !hasSentThinkingClose) {
+                              textToEmit = '\n</Thinking>\n\n' + textToEmit
+                              hasSentThinkingClose = true
+                            }
+                            textToEmit += delta.content
+                          }
+
+                          if (textToEmit) {
+                            const payload = { candidates: [{ content: { parts: [{ text: textToEmit }] } }] }
+                            res.write(`data: ${JSON.stringify(payload)}\n\n`)
+                          }
+                        } catch { /* skip */ }
+                      }
+                    }
+                  }
+                  res.end()
+                  return
+                }
+              } catch (e: any) {
+                res.statusCode = 500
+                res.end(JSON.stringify({ error: e.message }))
+                return
+              }
+            })
+            return
+          }
+        }
+        next()
+      })
+    }
+  })
 
   return {
     plugins: [
       react(),
+      deepseekMiddlewarePlugin(),
       rateLimitPlugin()  // 添加速率限制插件
     ],
     resolve: {
@@ -124,7 +251,7 @@ export default defineConfig(({ mode }) => {
         '/api/gemini': {
           target: 'https://generativelanguage.googleapis.com',
           changeOrigin: true,
-          rewrite: () => `/v1beta/models/${model}:streamGenerateContent?alt=sse&key=${apiKey}`,
+          rewrite: () => `/v1beta/models/${geminiModel}:streamGenerateContent?alt=sse&key=${geminiKey}`,
           secure: true,
           timeout: 120000,
           proxyTimeout: 120000,
@@ -132,7 +259,7 @@ export default defineConfig(({ mode }) => {
         '/api/followup': {
           target: 'https://generativelanguage.googleapis.com',
           changeOrigin: true,
-          rewrite: () => `/v1beta/models/${model}:generateContent?key=${apiKey}`,
+          rewrite: () => `/v1beta/models/${geminiModel}:generateContent?key=${geminiKey}`,
           secure: true,
           timeout: 60000,
         },
@@ -140,3 +267,4 @@ export default defineConfig(({ mode }) => {
     },
   }
 })
+

@@ -89,7 +89,7 @@ export function PersonalityInterview({ onComplete, onSkip }: PersonalityIntervie
           >
             <div className="w-10 h-10 rounded-full border-t-2 border-r-2 border-neon-gold animate-spin mb-6"></div>
             <p className="text-neon-gold animate-pulse text-base tracking-widest text-center">
-              Gemini 正在深潜你的潜意识<br/>
+              AI 正在深潜你的潜意识<br/>
               <span className="text-xs text-gray-500 mt-2 block">为您提炼您的画像...</span>
             </p>
           </motion.div>
