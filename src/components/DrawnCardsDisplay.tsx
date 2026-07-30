@@ -1,6 +1,8 @@
 // DrawnCardsDisplay.tsx - 左上角已抽牌展示组件
 import { motion, AnimatePresence } from 'framer-motion'
 import type { DrawnCard } from '../data/tarotCards'
+import { useLanguage } from '../i18n/LanguageContext'
+import { getCardName } from '../i18n/tarotTranslations'
 
 interface DrawnCardsDisplayProps {
     cards: DrawnCard[]
@@ -8,11 +10,12 @@ interface DrawnCardsDisplayProps {
 }
 
 export function DrawnCardsDisplay({ cards, compact = true }: DrawnCardsDisplayProps) {
+    const { language, t } = useLanguage()
     if (cards.length === 0) return null
 
     return (
         <motion.div
-            className={`fixed ${compact ? 'top-4 left-4' : 'relative'} z-40`}
+            className={`fixed ${compact ? 'top-16 left-4' : 'relative'} z-40`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
         >
@@ -43,7 +46,7 @@ export function DrawnCardsDisplay({ cards, compact = true }: DrawnCardsDisplayPr
                         >
                             <img
                                 src={drawnCard.card.image}
-                                alt={drawnCard.card.name}
+                                alt={getCardName(drawnCard.card, language)}
                                 className="w-full h-full object-cover"
                                 draggable={false}
                             />
@@ -76,7 +79,7 @@ export function DrawnCardsDisplay({ cards, compact = true }: DrawnCardsDisplayPr
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.3 }}
                 >
-                    已抽 {cards.length}/3 张
+                    {t('drawnCount', { count: cards.length })}
                 </motion.p>
             )}
         </motion.div>

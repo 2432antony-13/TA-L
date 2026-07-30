@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useLanguage } from '../i18n/LanguageContext'
 
 interface VideoOverlayProps {
     videoSrc: string
@@ -8,6 +9,7 @@ interface VideoOverlayProps {
 }
 
 export function VideoOverlay({ videoSrc, onComplete, blendMode = 'screen' }: VideoOverlayProps) {
+    const { t } = useLanguage()
     const videoRef = useRef<HTMLVideoElement>(null)
     const [isVisible, setIsVisible] = useState(true)
 
@@ -15,6 +17,11 @@ export function VideoOverlay({ videoSrc, onComplete, blendMode = 'screen' }: Vid
     const [hasError, setHasError] = useState(false)
     const [isMuted, setIsMuted] = useState(false) // 默认开启声音
     const [isPlaying, setIsPlaying] = useState(false) // 追踪播放状态
+
+    const handleClose = useCallback(() => {
+        setIsVisible(false)
+        setTimeout(onComplete, 500)
+    }, [onComplete])
 
     useEffect(() => {
         const video = videoRef.current
@@ -69,12 +76,7 @@ export function VideoOverlay({ videoSrc, onComplete, blendMode = 'screen' }: Vid
             video.removeEventListener('play', handlePlay)
             video.removeEventListener('pause', handlePause)
         }
-    }, [])
-
-    const handleClose = () => {
-        setIsVisible(false)
-        setTimeout(onComplete, 500)
-    }
+    }, [handleClose])
 
     const togglePlay = () => {
         if (videoRef.current) {
@@ -100,15 +102,15 @@ export function VideoOverlay({ videoSrc, onComplete, blendMode = 'screen' }: Vid
                     {isLoading && !hasError && (
                         <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
                             <div className="w-10 h-10 border-4 border-neon-gold border-t-transparent rounded-full animate-spin"></div>
-                            <span className="ml-3 text-neon-gold font-mono text-sm">Loading Video...</span>
+                            <span className="ml-3 text-neon-gold font-mono text-sm">{t('videoLoading')}</span>
                         </div>
                     )}
 
                     {/* Error Message */}
                     {hasError && (
                         <div className="absolute inset-0 flex flex-col items-center justify-center z-10 text-red-400 pointer-events-none">
-                            <p className="text-xl">⚠️ 视频加载失败</p>
-                            <p className="text-sm mt-2">请检查 public/gesture-intro.mp4 是否存在</p>
+                            <p className="text-xl">{t('videoError')}</p>
+                            <p className="text-sm mt-2">{t('videoErrorHint')}</p>
                         </div>
                     )}
 
@@ -162,7 +164,7 @@ export function VideoOverlay({ videoSrc, onComplete, blendMode = 'screen' }: Vid
                             whileTap={{ scale: 0.9 }}
                         >
                             <span className="text-xl">{isMuted ? '🔇' : '🔊'}</span>
-                            <span className="text-sm">{isMuted ? '开启声音' : '静音'}</span>
+                            <span className="text-sm">{isMuted ? t('soundOn') : t('mute')}</span>
                         </motion.button>
 
                         <motion.button
@@ -173,7 +175,7 @@ export function VideoOverlay({ videoSrc, onComplete, blendMode = 'screen' }: Vid
                             transition={{ delay: 0.5 }}
                             whileTap={{ scale: 0.95 }}
                         >
-                            ✨ 跳过指引
+                            {t('skipGuide')}
                         </motion.button>
                     </div>
 
@@ -194,7 +196,7 @@ export function VideoOverlay({ videoSrc, onComplete, blendMode = 'screen' }: Vid
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 1 }}
                         >
-                            ✨ 跳过指引
+                            {t('skipGuide')}
                         </motion.button>
                     </div>
                 </motion.div>

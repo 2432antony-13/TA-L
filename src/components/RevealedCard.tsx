@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import type { DrawnCard } from '../data/tarotCards'
 import { useGesture } from '../context/GestureContext'
+import { useLanguage } from '../i18n/LanguageContext'
+import { getCardMeaning, getCardName } from '../i18n/tarotTranslations'
 
 // 握拳返回所需时长（毫秒）
 const FIST_RETURN_DELAY = 1000
@@ -13,7 +15,9 @@ interface RevealedCardProps {
 }
 
 export function RevealedCard({ drawnCard, onDrawAgain }: RevealedCardProps) {
+    const { language, t } = useLanguage()
     const { handState, isEnabled } = useGesture()
+    const { isFist, fistStartTime } = handState
     const [fistProgress, setFistProgress] = useState(0)  // 握拳进度 0-100%
     const hasTriggeredRef = useRef(false)
 
@@ -23,8 +27,6 @@ export function RevealedCard({ drawnCard, onDrawAgain }: RevealedCardProps) {
             setFistProgress(0)
             return
         }
-
-        const { isFist, fistStartTime } = handState
 
         if (isFist && fistStartTime) {
             const checkProgress = () => {
@@ -45,7 +47,7 @@ export function RevealedCard({ drawnCard, onDrawAgain }: RevealedCardProps) {
             setFistProgress(0)
             hasTriggeredRef.current = false
         }
-    }, [handState.isFist, handState.fistStartTime, isEnabled, onDrawAgain])
+    }, [isFist, fistStartTime, isEnabled, onDrawAgain])
 
     return (
         <motion.div
@@ -66,7 +68,7 @@ export function RevealedCard({ drawnCard, onDrawAgain }: RevealedCardProps) {
                 transition={{ delay: 0.2 }}
             >
                 <span className="text-sm tracking-[0.2em] font-bold">
-                    {drawnCard.isReversed ? '⚠️ REVERSED 逆位' : '✨ UPRIGHT 正位'}
+                    {drawnCard.isReversed ? t('reversed') : t('upright')}
                 </span>
             </motion.div>
 
@@ -97,7 +99,7 @@ export function RevealedCard({ drawnCard, onDrawAgain }: RevealedCardProps) {
 
                 {/* 牌名 */}
                 <h3 className="text-2xl font-bold text-white mb-1 drop-shadow-md">
-                    {drawnCard.card.name}
+                    {getCardName(drawnCard.card, language)}
                 </h3>
 
                 {/* 序号/牌组 */}
@@ -110,7 +112,7 @@ export function RevealedCard({ drawnCard, onDrawAgain }: RevealedCardProps) {
                     <p className={`text-lg font-medium leading-relaxed italic
                         ${drawnCard.isReversed ? 'text-purple-300' : 'text-neon-gold'}
                     `}>
-                        "{drawnCard.isReversed ? drawnCard.card.reversedMeaning : drawnCard.card.uprightMeaning}"
+                        "{getCardMeaning(drawnCard.card, drawnCard.isReversed, language)}"
                     </p>
 
                     {/* 装饰引号 - 调小 */}
@@ -124,7 +126,7 @@ export function RevealedCard({ drawnCard, onDrawAgain }: RevealedCardProps) {
                         onClick={onDrawAgain}
                         className="px-6 py-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors text-sm font-medium tracking-wide"
                     >
-                        再次探索
+                        {t('exploreAgain')}
                     </button>
 
                     {isEnabled && (
@@ -136,7 +138,7 @@ export function RevealedCard({ drawnCard, onDrawAgain }: RevealedCardProps) {
                                     style={{ width: `${fistProgress}%` }}
                                 />
                             </div>
-                            <span>✊ 握拳返回</span>
+                            <span>{t('fistReturn')}</span>
                         </div>
                     )}
                 </div>

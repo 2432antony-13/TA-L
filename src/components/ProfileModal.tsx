@@ -1,5 +1,7 @@
 // ProfileModal.tsx - 用户个性画像展示模态框
 import { motion, AnimatePresence } from 'framer-motion'
+import { X } from 'lucide-react'
+import { useLanguage } from '../i18n/LanguageContext'
 
 interface ProfileModalProps {
     isOpen: boolean
@@ -8,6 +10,7 @@ interface ProfileModalProps {
 }
 
 export function ProfileModal({ isOpen, onClose, profileText }: ProfileModalProps) {
+    const { t } = useLanguage()
     if (!profileText) return null
 
     return (
@@ -32,22 +35,23 @@ export function ProfileModal({ isOpen, onClose, profileText }: ProfileModalProps
                         <button
                             onClick={onClose}
                             className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 hover:border-white/30 transition-all z-10"
+                            aria-label={t('cancel')}
                         >
-                            ✕
+                            <X size={16} />
                         </button>
 
                         <h3 className="text-xl md:text-2xl font-bold text-neon-gold text-center mb-6">
-                            你的专属个性画像
+                            {t('profileTitle')}
                         </h3>
 
                         <div className="bg-white/5 border border-neon-gold/20 rounded-xl p-5 mb-4">
                             {profileText.split('\n').map((line, i) => {
-                                if (i === 0 && line.includes('用户个性画像')) {
+                                if (i === 0 && (line.includes('个性画像') || line.includes('Personality Profile'))) {
                                     // [用户个性画像] 标题行，跳过
                                     return null
                                 }
                                 if (line.trim() === '') return <div key={i} className="h-3" />
-                                if (line.startsWith('综合印象:')) {
+                                if (line.startsWith('综合印象:') || line.startsWith('Overall impression:')) {
                                     return (
                                         <p key={i} className="text-sm text-gray-300 leading-relaxed mt-2 italic shadow-sm">
                                             {line}
@@ -56,7 +60,7 @@ export function ProfileModal({ isOpen, onClose, profileText }: ProfileModalProps
                                 }
                                 // 维度行
                                 const colonIdx = line.indexOf(':')
-                                if (colonIdx > 0 && !line.startsWith('综合印象:')) {
+                                if (colonIdx > 0 && !line.startsWith('综合印象:') && !line.startsWith('Overall impression:')) {
                                     const dim = line.slice(0, colonIdx)
                                     const rest = line.slice(colonIdx + 1).trim()
                                     const dashIdx = rest.indexOf('—')

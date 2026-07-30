@@ -137,6 +137,99 @@ export const interviewQuestions: InterviewQuestion[] = [
   },
 ]
 
+export const interviewQuestionsEn = [
+  {
+    question: 'What has made you feel accomplished recently, even if it was something small?',
+    options: [
+      'I finally completed a goal I had delayed for a long time.',
+      'I helped someone important and saw things improve for them.',
+      'I learned a skill or reached a new understanding.',
+      'I gave myself a real break and finally rested.',
+    ],
+  },
+  {
+    question: 'What do you usually do to recharge?',
+    options: [
+      'I rarely sit still; even rest involves doing something.',
+      'I meet friends and recharge through conversation.',
+      'I prefer being alone with a show, music, or quiet time.',
+      'It depends: sometimes I am active, sometimes I do nothing.',
+    ],
+  },
+  {
+    question: 'How do you feel about astrology and personality tests?',
+    options: [
+      'I do not really believe them, but they can be interesting.',
+      'Some descriptions feel accurate enough to be useful.',
+      'I do not believe them; they mostly reflect the Barnum effect.',
+      'I am undecided and treat them as part of the conversation.',
+    ],
+  },
+  {
+    question: 'What kind of person makes a conversation feel worthwhile?',
+    options: [
+      'Someone with independent ideas who can challenge mine.',
+      'Someone genuine who makes conversation feel easy.',
+      'Someone imaginative, playful, and full of fresh perspectives.',
+      'Someone dependable who does what they say.',
+    ],
+  },
+  {
+    question: 'When others do not understand a decision you care about, what tends to happen?',
+    options: [
+      'It happens often, but I keep going without worrying much.',
+      'It hurts for a while, but I still choose to trust myself.',
+      'I hesitate, then let evidence and results make the case.',
+      'I can lose confidence until I find someone who understands.',
+    ],
+  },
+  {
+    question: 'Do the people around you know the whole you, or mostly your capable side?',
+    options: [
+      'Most people see competence and very few see the other side.',
+      'A small number of people know me well.',
+      'I am fairly consistent; what people see is the real me.',
+      'I am not always sure what the real me looks like.',
+    ],
+  },
+  {
+    question: 'Is there anything others think you do not care about, although you actually do?',
+    options: [
+      'Yes, especially someone’s opinion or attitude toward me.',
+      'Yes, effort or contributions that went unnoticed.',
+      'Not often; I usually say what matters to me.',
+      'Yes, but I tend to process it privately.',
+    ],
+  },
+  {
+    question: 'Do you seem decisive on the outside while feeling more sensitive within?',
+    options: [
+      'Yes. I am quite sensitive but rarely show it.',
+      'Not especially. Reason usually leads for me.',
+      'It depends. I am tender with people who matter to me.',
+      'Everyone has a sensitive side; I resist that kind of label.',
+    ],
+  },
+  {
+    question: 'What are you looking forward to at the moment?',
+    options: [
+      'A goal or project is close to completion.',
+      'Spending meaningful time with someone important.',
+      'Traveling or finally doing something I have wanted to do.',
+      'Nothing specific; I am taking life one step at a time.',
+    ],
+  },
+  {
+    question: 'What kind of relationship lets you fully lower your guard?',
+    options: [
+      'An equal relationship where both people can speak plainly.',
+      'One where I feel understood without explaining everything.',
+      'One with space and independence, but dependable presence.',
+      'One that feels secure without constant maintenance.',
+    ],
+  },
+] as const
+
 // 维度→选项特征的映射关系
 interface DimensionProfile {
   label: string
@@ -249,37 +342,57 @@ function getDefaultImpression(socialLabel: string, emotionLabel: string, driveLa
 
 export async function generatePersonalityProfileAsync(
   answers: InterviewAnswer[],
+  language: 'zh-CN' | 'en' = 'zh-CN',
   onChunk?: (text: string) => void
 ): Promise<string> {
-  // 先保留原来的本地生成逻辑作为 fallback
-  const fallbackProfile = generatePersonalityProfile(answers)
+  const isChinese = language === 'zh-CN'
+  const fallbackProfile = isChinese
+    ? generatePersonalityProfile(answers)
+    : generateEnglishPersonalityProfile(answers)
 
   // 构建传给 Gemini 的 prompt
   try {
     const qaDetails = answers.map((ans, idx) => {
       const q = interviewQuestions.find(i => i.id === ans.questionId)
       if (!q) return ''
-      const selectedText = q.options[ans.selectedOption].text
-      return `【问题${idx + 1}】：${q.question}\n【用户的选择】：${selectedText}`
+      const localized = interviewQuestionsEn[q.id - 1]
+      const questionText = isChinese ? q.question : localized.question
+      const selectedText = isChinese ? q.options[ans.selectedOption].text : localized.options[ans.selectedOption]
+      return isChinese
+        ? `【问题${idx + 1}】：${questionText}\n【用户的选择】：${selectedText}`
+        : `Question ${idx + 1}: ${questionText}\nAnswer: ${selectedText}`
     }).join('\n\n')
 
-    const prompt = `你是一位精通MBTI和深层人性洞察的专家。用户刚刚完成了一份由10道深度心理探针问题组成的测试访谈。记录如下：
+    const prompt = isChinese
+      ? `你是一位擅长沟通偏好分析的助手。用户完成了10道自我观察问题，记录如下：
 
 ${qaDetails}
 
-**【极速响应指令：非常重要】**
-**绝对禁止使用 <Thinking> 标签！不要输出任何推理过程！不要任何开场白或结束语！直接输出最终结果！**
+不要输出推理过程，也不要把结果说成心理诊断或客观事实。直接生成一份沟通偏好画像：
 
-请直接生成一份独一无二的专属【个性画像】。必须严格按照以下格式纯文本输出：
-
-[用户个性画像]
+[个性画像]
 社交倾向: [四字词语] — [一句话解释（15字以内）]
 决策风格: [四字词语] — [一句话解释]
 情感表达: [四字词语] — [一句话解释]
 应对方式: [四字词语] — [一句话解释]
 核心驱动: [四字词语] — [一句话解释]
 
-综合印象: [一段60-80字的话。极其敏锐、深刻地描绘出这个人的真实精神面貌，要有神算感，直接点出表面坚强等伪装下的真实诉求和隐秘痛点。]
+综合印象: [60-80字，基于用户选择，使用克制、尊重且不武断的表达。]
+`
+      : `You analyze communication preferences. The user answered ten self-reflection questions:
+
+${qaDetails}
+
+Do not reveal hidden reasoning or present this as a diagnosis or objective fact. Return only this plain-text structure:
+
+[Personality Profile]
+Social style: [short label] — [one-sentence explanation]
+Decision style: [short label] — [one-sentence explanation]
+Emotional expression: [short label] — [one-sentence explanation]
+Coping style: [short label] — [one-sentence explanation]
+Core motivation: [short label] — [one-sentence explanation]
+
+Overall impression: [60-90 words grounded in the selected answers, respectful and appropriately uncertain.]
 `
 
     let deviceId = localStorage.getItem('tarot_device_uuid')
@@ -288,7 +401,7 @@ ${qaDetails}
       localStorage.setItem('tarot_device_uuid', deviceId)
     }
 
-    const response = await fetch('/api/gemini', {
+    const response = await fetch('/api/reading?fast=1', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -296,10 +409,7 @@ ${qaDetails}
       },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-            temperature: 0.8,
-            maxOutputTokens: 1000,
-        }
+        language,
       })
     })
 
@@ -325,21 +435,40 @@ ${qaDetails}
               text += part
               if (onChunk) onChunk(part)
             }
-          } catch (e) { /* ignore */ }
+          } catch { /* ignore malformed provider event */ }
         }
       }
     }
 
-    if (text.trim().length > 50 && text.includes('综合印象')) {
+    if (text.trim().length > 50 && text.includes(isChinese ? '综合印象' : 'Overall impression')) {
       return text.trim()
     }
-    console.warn("Gemini output invalid format, fallback to local generation.")
+    console.warn('Profile output used an unexpected format; using the local fallback.')
     return fallbackProfile
 
   } catch (error) {
-    console.error("Dynamic profile generation failed, using fallback:", error)
+    console.error('Dynamic profile generation failed; using the local fallback:', error)
     return fallbackProfile
   }
+}
+
+function generateEnglishPersonalityProfile(answers: InterviewAnswer[]): string {
+  const choice = (questionId: number) =>
+    answers.find(answer => answer.questionId === questionId)?.selectedOption ?? 0
+  const social = ['Engaged challenger', 'Quiet connector', 'Curious catalyst', 'Steady builder'][choice(4)]
+  const decision = ['Independent mover', 'Values-led', 'Evidence-led', 'Collaborative'][choice(5)]
+  const emotion = ['Private sensitivity', 'Selective openness', 'Direct expression', 'Reflective openness'][choice(6)]
+  const coping = ['Action-oriented', 'Analytical', 'Selectively tender', 'Self-reflective'][choice(8)]
+  const drive = ['Achievement', 'Connection', 'Freedom', 'Steadiness'][choice(9)]
+
+  return `[Personality Profile]
+Social style: ${social} — You value conversations that feel genuine and worthwhile.
+Decision style: ${decision} — You tend to move forward in a way that protects both judgment and autonomy.
+Emotional expression: ${emotion} — You choose carefully when and how to make inner concerns visible.
+Coping style: ${coping} — You restore balance through a pattern that fits the situation.
+Core motivation: ${drive} — This theme appears to shape what currently deserves your energy.
+
+Overall impression: Your answers suggest a person who values both self-direction and meaningful connection. You may prefer responses that respect complexity without turning every feeling into a fixed label. Clear options, honest boundaries, and room to make your own judgment are likely to be more useful than certainty or generic reassurance.`
 }
 
 export function generatePersonalityProfile(answers: InterviewAnswer[]): string {

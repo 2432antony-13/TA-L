@@ -1,4 +1,4 @@
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis';
 
 export const config = {
     runtime: 'edge',
@@ -10,6 +10,7 @@ const getCorsHeaders = (req) => {
     const allowedOrigins = [
         'https://taro-sepia.vercel.app',
         'https://www.taro24.fun',
+        'https://taro24.fun',
         ...envOrigins,
         'http://localhost:5173',
         'http://localhost:4173',
@@ -21,8 +22,15 @@ const getCorsHeaders = (req) => {
         'Access-Control-Allow-Origin': isAllowed ? origin : allowedOrigins[0],
         'Access-Control-Allow-Methods': 'POST, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type, X-Device-Id',
+        'Vary': 'Origin',
     };
 };
+
+function getRedis() {
+    const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+    const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
+    return url && token ? new Redis({ url, token }) : null;
+}
 
 export default async function handler(req) {
     const corsHeaders = getCorsHeaders(req);
@@ -36,6 +44,13 @@ export default async function handler(req) {
     }
 
     try {
+        const redis = getRedis();
+        if (!redis) {
+            return new Response(JSON.stringify({ error: 'History storage is not configured' }), {
+                status: 503,
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+        }
         const body = await req.json();
         const { sessionId, question, answer, action } = body;
         const deviceId = req.headers.get('x-device-id');
@@ -49,7 +64,7 @@ export default async function handler(req) {
             const kvKey = `user_history:${deviceId}`;
 
             // 1. 获取用户所有历史记录
-            const historyList = await kv.lrange(kvKey, 0, -1);
+            const historyList = await redis.lrange(kvKey, 0, -1);
 
             // 2. 查找对应 sessionId 的记录
             const index = historyList.findIndex(item => item.id === sessionId);
@@ -64,7 +79,7 @@ export default async function handler(req) {
                 record.followUps.push({ q: question, a: answer });
 
                 // 4. 写回 KV
-                await kv.lset(kvKey, index, record);
+                await redis.lset(kvKey, index, record);
 
                 console.log(`[FollowUpSave] Saved follow-up for session ${sessionId}`);
 

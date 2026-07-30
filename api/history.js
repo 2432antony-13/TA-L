@@ -1,5 +1,5 @@
 // api/history.js
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis';
 
 export const config = {
     runtime: 'edge',
@@ -11,6 +11,7 @@ const getCorsHeaders = (req) => {
     const allowedOrigins = [
         'https://taro-sepia.vercel.app',
         'https://www.taro24.fun',
+        'https://taro24.fun',
         ...envOrigins,
         'http://localhost:5173',
         'http://localhost:4173',
@@ -22,8 +23,15 @@ const getCorsHeaders = (req) => {
         'Access-Control-Allow-Origin': isAllowed ? origin : allowedOrigins[0],
         'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type, X-Device-Id',
+        'Vary': 'Origin',
     };
 };
+
+function getRedis() {
+    const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+    const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
+    return url && token ? new Redis({ url, token }) : null;
+}
 
 export default async function handler(req) {
     const corsHeaders = getCorsHeaders(req);
@@ -33,7 +41,7 @@ export default async function handler(req) {
     }
 
     const deviceId = req.headers.get('x-device-id');
-    if (!deviceId) {
+    if (!deviceId || deviceId.length > 128) {
         return new Response(JSON.stringify({ error: 'Missing Device ID' }), {
             status: 400,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -43,10 +51,18 @@ export default async function handler(req) {
     const kvKey = `user_history:${deviceId}`;
 
     try {
+        const redis = getRedis();
+        if (!redis) {
+            return new Response(JSON.stringify({ error: 'History storage is not configured' }), {
+                status: 503,
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+        }
+
         // GET: 获取历史记录
         if (req.method === 'GET') {
             // 获取列表，默认获取最近 20 条
-            const history = await kv.lrange(kvKey, 0, 19);
+            const history = await redis.lrange(kvKey, 0, 19);
             return new Response(JSON.stringify(history), {
                 status: 200,
                 headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -73,10 +89,10 @@ export default async function handler(req) {
             };
 
             // 推入列表头部
-            await kv.lpush(kvKey, record);
+            await redis.lpush(kvKey, record);
 
             // 保留最近 50 条，删除多余的
-            await kv.ltrim(kvKey, 0, 49);
+            await redis.ltrim(kvKey, 0, 49);
 
             return new Response(JSON.stringify({ success: true, record }), {
                 status: 200,

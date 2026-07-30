@@ -1,6 +1,7 @@
 // App.tsx - Main application with complete tarot reading flow
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { History } from 'lucide-react'
 import { allCards, drawRandomCard, type DrawnCard } from './data/tarotCards'
 import {
   TarotCarousel,
@@ -14,17 +15,21 @@ import {
   HistorySidebar,
   VideoOverlay,
   PersonalityInterview,
+  LanguageToggle,
 } from './components'
 import { QuestionInput } from './components/QuestionInput'
 import { PersonalitySelector, type PersonalityType } from './components/PersonalitySelector'
 import { GestureProvider, useGesture } from './context/GestureContext'
 import { TarotProvider } from './context/TarotContext'
-import { useGeminiAPI } from './hooks/useGeminiAPI'
+import { useAIReading } from './hooks/useAIReading'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
+import { useLanguage } from './i18n/LanguageContext'
+import { getCardName } from './i18n/tarotTranslations'
 
 type AppPhase = 'IDLE' | 'PERSONALITY_SELECTION' | 'INTERVIEW' | 'QUESTION_INPUT' | 'SHUFFLING' | 'DRAWING' | 'CARD_REVEAL' | 'READING'
 
 function AppContent() {
+  const { language, t } = useLanguage()
   const [phase, setPhase] = useState<AppPhase>('IDLE')
   const [drawnCards, setDrawnCards] = useState<DrawnCard[]>([])
   const [currentRevealedCard, setCurrentRevealedCard] = useState<DrawnCard | null>(null)
@@ -35,14 +40,17 @@ function AppContent() {
   const [luckyNumber, setLuckyNumber] = useState('')
   const [isHistoryOpen, setIsHistoryOpen] = useState(false)
   const [sessionId, setSessionId] = useState<string | null>(null)
-  const [interviewProfile, setInterviewProfile] = useState<string | null>(
-    () => localStorage.getItem('tarot_interview_profile')
+  const [interviewProfile, setInterviewProfile] = useState<string | null>(() =>
+    localStorage.getItem(`tarot_interview_profile_${language}`),
   )
 
   const jumpToCardRef = useRef<((index: number) => void) | null>(null)
   const { handState, isEnabled } = useGesture()
-  // 使用更新后的 hook，解构 result 和 isStreaming
-  const { getReading, isLoading, isStreaming, result, resetResult } = useGeminiAPI()
+  const { getReading, isLoading, isStreaming, result, resetResult } = useAIReading()
+
+  useEffect(() => {
+    setInterviewProfile(localStorage.getItem(`tarot_interview_profile_${language}`))
+  }, [language])
 
   // 幸运数字提交
   const handleLuckySubmit = useCallback(() => {
@@ -95,9 +103,9 @@ function AppContent() {
   // 访谈完成，保存画像到 state 和 localStorage
   const handleInterviewComplete = useCallback((profile: string) => {
     setInterviewProfile(profile)
-    localStorage.setItem('tarot_interview_profile', profile)
+    localStorage.setItem(`tarot_interview_profile_${language}`, profile)
     setPhase('QUESTION_INPUT')
-  }, [])
+  }, [language])
 
   // 访谈跳过
   const handleInterviewSkip = useCallback(() => {
@@ -111,7 +119,7 @@ function AppContent() {
   }, [])
 
   // 抽牌
-  const handleSelectCard = useCallback((_cardIndex: number) => {
+  const handleSelectCard = useCallback(() => {
     if (isFlipping || drawnCards.length >= 3) return
 
     setIsFlipping(true)
@@ -124,7 +132,7 @@ function AppContent() {
       setPhase('CARD_REVEAL')
       setIsFlipping(false)
     }, 300)
-  }, [isFlipping, drawnCards.length])
+  }, [isFlipping, drawnCards])
 
   // 确认当前牌，继续抽或进入解读
   const handleConfirmCard = useCallback(() => {
@@ -146,25 +154,24 @@ function AppContent() {
     setQuestion(q)
 
     try {
-      const positions = ['过去', '现在', '未来']
-      // getReading 现在返回后端保存的 record.id，用于追问关联
+      const positions = [t('past'), t('present'), t('future')]
       const savedId = await getReading({
         cards: drawnCards.map((dc, i) => ({
-          name: dc.card.name,
+          name: getCardName(dc.card, language),
           isReversed: dc.isReversed,
           position: positions[i]
         })),
         question: q,
         personality: personality,
-        interviewProfile: interviewProfile ?? undefined
+        interviewProfile: interviewProfile ?? undefined,
+        language,
       })
-      // 使用后端真实的 record.id 作为 sessionId
       setSessionId(savedId || crypto.randomUUID())
     } catch (error) {
-      console.error('解读失败:', error)
-      alert(`API 请求失败: ${error instanceof Error ? error.message : '未知错误'}\n请检查网络或 API Key。`)
+      console.error('Reading failed:', error)
+      alert(t('apiFailed', { message: error instanceof Error ? error.message : t('unknownError') }))
     }
-  }, [drawnCards, getReading, personality, interviewProfile])
+  }, [drawnCards, getReading, personality, interviewProfile, language, t])
 
 
   // 重置开始新一轮（保留 interviewProfile，不清除画像）
@@ -182,11 +189,12 @@ function AppContent() {
   }, [resetResult])
 
 
-  // 视频引导逻辑
-  const [showIntro, setShowIntro] = useState(true)
+  const [showIntro, setShowIntro] = useState(
+    () => localStorage.getItem('ta-l-intro-seen') !== 'true',
+  )
 
-  // 用户要求每次进入都显示，移除 localStorage 检查
   const handleIntroComplete = () => {
+    localStorage.setItem('ta-l-intro-seen', 'true')
     setShowIntro(false)
   }
 
@@ -195,6 +203,7 @@ function AppContent() {
   return (
     <div className={`relative w-full flex flex-col items-center ${phase === 'QUESTION_INPUT' || phase === 'READING' ? '' : 'select-none'} ${phase === 'READING' ? 'h-screen overflow-y-auto overflow-x-hidden' : 'overflow-hidden justify-center h-screen'
       } p-4`}>
+      <LanguageToggle />
 
       {/* 视频引导遮罩 (仅首次访问显示) */}
       {showIntro && (
@@ -229,11 +238,11 @@ function AppContent() {
           >
             <h1 className="font-black text-3xl md:text-5xl lg:text-6xl text-transparent bg-clip-text bg-gradient-to-br from-starlight via-gray-200 to-gray-500 py-2 leading-relaxed"
               style={{ textShadow: '0 0 30px rgba(255,255,255,0.1)' }}>
-              塔罗叙事
+              {t('appTitle')}
             </h1>
             <h2 className="font-light tracking-[0.3em] md:tracking-[0.5em] text-neon-gold/70 uppercase text-sm md:text-lg mt-3"
               style={{ textShadow: '0 0 10px rgba(255, 215, 0, 0.3)' }}>
-              The Mystic Narrative
+              {t('appSubtitle')}
             </h2>
           </motion.div>
         )}
@@ -253,15 +262,15 @@ function AppContent() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
           >
-            <p className="text-gray-400 mb-6">在心中默念你的问题，然后开始占卜</p>
+            <p className="text-gray-400 mb-6">{t('idlePrompt')}</p>
 
             <button
               onClick={handleStartDrawing}
               className="px-8 py-4 bg-gradient-to-r from-neon-gold-dim to-neon-gold text-black font-semibold rounded-xl hover:shadow-neon transition-all duration-300"
             >
-              ✨ 开始占卜
+              {t('startReading')}
             </button>
-            <p className="text-sm text-gray-500 mt-3">或按空格键开始</p>
+            <p className="text-sm text-gray-500 mt-3">{t('spaceToStart')}</p>
           </motion.div>
         )}
 
@@ -301,7 +310,8 @@ function AppContent() {
               <input
                 type="text"
                 inputMode="numeric"
-                placeholder="幸运数字~"
+                placeholder={t('luckyNumber')}
+                aria-label={t('luckyNumber')}
                 value={luckyNumber}
                 onChange={(e) => setLuckyNumber(e.target.value.replace(/[^0-9]/g, ''))}
                 onKeyDown={(e) => e.key === 'Enter' && handleLuckySubmit()}
@@ -311,7 +321,7 @@ function AppContent() {
                 onClick={handleLuckySubmit}
                 className="px-4 py-2 text-sm bg-neon-gold/20 hover:bg-neon-gold/40 border border-neon-gold/30 rounded-lg text-neon-gold transition-colors"
               >
-                确定
+                {t('confirm')}
               </button>
             </div>
             <TarotCarousel
@@ -341,9 +351,9 @@ function AppContent() {
               transition={{ delay: 0.5 }}
             >
               {drawnCards.length < 2 ? (
-                `还需抽取 ${2 - drawnCards.length} 张牌`
+                t('remainingCards', { count: 2 - drawnCards.length })
               ) : (
-                '这是最后一张牌，点击完成占卜'
+                t('lastCard')
               )}
             </motion.p>
           </motion.div>
@@ -355,7 +365,6 @@ function AppContent() {
             cards={drawnCards}
             question={question}
             reading={result.reading || null}
-            thinking={result.thinking}
             isLoading={isLoading || isStreaming}
             isStreaming={isStreaming}
             sessionId={sessionId}
@@ -373,9 +382,7 @@ function AppContent() {
       {/* 免责声明 Footer - 仅桌面端显示，避免与手势提示重叠 */}
       <div className="hidden md:block absolute bottom-2 left-0 w-full text-center z-40 pointer-events-none px-4">
         <p className="text-[10px] text-white/30">
-          * 本应用内容由 AI 生成，仅供娱乐与灵感启发，不构成任何心理咨询、医疗或法律建议。
-          <span className="hidden md:inline"> </span>
-          请理性对待，相信科学，命运始终掌握在自己手中。
+          {t('disclaimer')}
         </p>
       </div>
 
@@ -385,15 +392,14 @@ function AppContent() {
       {/* 首页指引角色 */}
       {phase === 'IDLE' && <GuidanceCharacter />}
 
-      {/* 历史记录按钮 */}
-      {/* 历史记录按钮 */}
       <button
         onClick={() => setIsHistoryOpen(true)}
-        className="fixed top-6 right-6 z-40 px-6 py-3 flex items-center justify-center gap-3 rounded-full bg-black/40 border border-neon-gold/30 text-neon-gold hover:bg-black/60 hover:border-neon-gold/60 transition-all backdrop-blur-md shadow-[0_0_15px_rgba(255,215,0,0.1)] group"
-        title="我的占卜记录"
+        className="fixed top-4 left-4 z-40 h-10 px-3 flex items-center justify-center gap-2 rounded-lg bg-black/50 border border-neon-gold/30 text-neon-gold hover:bg-black/70 hover:border-neon-gold/60 transition-all backdrop-blur-md"
+        title={t('historyTitle')}
+        aria-label={t('historyTitle')}
       >
-        <span className="text-2xl group-hover:scale-110 transition-transform duration-300">📜</span>
-        <span className="text-lg font-medium tracking-wide">我的记录</span>
+        <History size={18} aria-hidden="true" />
+        <span className="hidden sm:inline text-sm font-medium">{t('history')}</span>
       </button>
 
       {/* 历史记录侧边栏 */}
@@ -401,25 +407,6 @@ function AppContent() {
     </div>
   )
 }
-
-// 备用解读（当 API 不可用时）
-// 备用解读（当 API 不可用时）- 用户要求移除兜底，暂时注释
-// function generateFallbackReading(cards: DrawnCard[], question: string): string {
-//   const positions = ['过去', '现在', '未来']
-// 
-//   let reading = `🔮 关于您的问题：「${question}」\n\n`
-// 
-//   cards.forEach((dc, i) => {
-//     const meaning = dc.isReversed ? dc.card.reversedMeaning : dc.card.uprightMeaning
-//     reading += `【${positions[i]}】${dc.card.name}（${dc.isReversed ? '逆位' : '正位'}）\n`
-//     reading += `${meaning}\n\n`
-//   })
-// 
-//   reading += `✨ 整体指引\n`
-//   reading += `三张牌共同揭示了您问题的脉络。过去的经历塑造了现在，而现在的选择将影响未来。请跟随内心的指引，勇敢前行。`
-// 
-//   return reading
-// }
 
 function App() {
   return (

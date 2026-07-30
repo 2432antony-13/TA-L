@@ -2,6 +2,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CARD_BACK_IMAGE } from '../data/tarotCards'
+import { useLanguage } from '../i18n/LanguageContext'
 
 interface ShuffleAnimationProps {
     isActive: boolean
@@ -44,6 +45,7 @@ function generateVortexPositions(count: number, frame: number) {
 }
 
 export function ShuffleAnimation({ isActive, onComplete }: ShuffleAnimationProps) {
+    const { t } = useLanguage()
     const [phase, setPhase] = useState<Phase>('idle')
     const [vortexFrame, setVortexFrame] = useState(0)
 
@@ -211,9 +213,9 @@ export function ShuffleAnimation({ isActive, onComplete }: ShuffleAnimationProps
                     transition={{ delay: 0.3 }}
                 >
                     <p className="text-neon-gold text-lg font-light tracking-widest">
-                        {phase === 'burst' && '✨ 命运之牌散落...'}
-                        {phase === 'vortex' && '🌀 能量汇聚中...'}
-                        {phase === 'merge' && '🔮 重组完成'}
+                        {phase === 'burst' && t('cardsScattering')}
+                        {phase === 'vortex' && t('energyGathering')}
+                        {phase === 'merge' && t('shuffleComplete')}
                     </p>
                 </motion.div>
             </motion.div>

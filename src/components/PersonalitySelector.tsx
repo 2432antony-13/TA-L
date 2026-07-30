@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ProfileModal } from './ProfileModal'
+import { useLanguage } from '../i18n/LanguageContext'
 
 export type PersonalityType = 'T' | 'F'
 
@@ -12,6 +13,7 @@ interface PersonalitySelectorProps {
 }
 
 export function PersonalitySelector({ onSelect, onStartInterview, existingProfile }: PersonalitySelectorProps) {
+    const { t } = useLanguage()
     const [selectedType, setSelectedType] = useState<PersonalityType | null>(null)
     const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
 
@@ -44,7 +46,7 @@ export function PersonalitySelector({ onSelect, onStartInterview, existingProfil
                                     animate={{ y: 0, opacity: 1 }}
                                     transition={{ delay: 0.2 }}
                                 >
-                                    🌟 选择你的解读风格
+                                    {t('selectStyle')}
                                 </motion.h2>
                                 <motion.p
                                     className="text-gray-400 text-sm md:text-base"
@@ -52,7 +54,7 @@ export function PersonalitySelector({ onSelect, onStartInterview, existingProfil
                                     animate={{ y: 0, opacity: 1 }}
                                     transition={{ delay: 0.3 }}
                                 >
-                                    你更偏向于理性分析，还是感性共情？
+                                    {t('selectStyleHint')}
                                 </motion.p>
                             </div>
 
@@ -71,23 +73,21 @@ export function PersonalitySelector({ onSelect, onStartInterview, existingProfil
                                     <div className="flex items-center gap-3 mb-4">
                                         <span className="text-4xl">🧠</span>
                                         <div>
-                                            <h3 className="text-xl font-bold text-cyan-300">T 型 · 理性思考</h3>
+                                            <h3 className="text-xl font-bold text-cyan-300">{t('thinkingType')}</h3>
                                             <p className="text-xs text-cyan-500/70">Thinking</p>
                                         </div>
                                     </div>
                                     <p className="text-sm text-gray-300 leading-relaxed mb-4">
-                                        我更喜欢<strong className="text-cyan-200">客观、直接</strong>的分析。
-                                        <br />
-                                        告诉我问题在哪，给我<strong className="text-cyan-200">解决方案</strong>。
+                                        {t('thinkingDesc')}
                                     </p>
                                     <div className="flex flex-wrap gap-2">
-                                        <span className="px-2 py-1 text-xs bg-cyan-900/50 text-cyan-300 rounded-full">逻辑分析</span>
-                                        <span className="px-2 py-1 text-xs bg-cyan-900/50 text-cyan-300 rounded-full">直球建议</span>
-                                        <span className="px-2 py-1 text-xs bg-cyan-900/50 text-cyan-300 rounded-full">行动导向</span>
+                                        <span className="px-2 py-1 text-xs bg-cyan-900/50 text-cyan-300 rounded-full">{t('logicAnalysis')}</span>
+                                        <span className="px-2 py-1 text-xs bg-cyan-900/50 text-cyan-300 rounded-full">{t('directAdvice')}</span>
+                                        <span className="px-2 py-1 text-xs bg-cyan-900/50 text-cyan-300 rounded-full">{t('actionOriented')}</span>
                                     </div>
                                     {/* 悬停指示 */}
                                     <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <span className="text-cyan-400 text-sm">选择 →</span>
+                                        <span className="text-cyan-400 text-sm">{t('choose')} →</span>
                                     </div>
                                 </motion.button>
 
@@ -104,23 +104,21 @@ export function PersonalitySelector({ onSelect, onStartInterview, existingProfil
                                     <div className="flex items-center gap-3 mb-4">
                                         <span className="text-4xl">💖</span>
                                         <div>
-                                            <h3 className="text-xl font-bold text-pink-300">F 型 · 感性情感</h3>
+                                            <h3 className="text-xl font-bold text-pink-300">{t('feelingType')}</h3>
                                             <p className="text-xs text-pink-500/70">Feeling</p>
                                         </div>
                                     </div>
                                     <p className="text-sm text-gray-300 leading-relaxed mb-4">
-                                        我更希望被<strong className="text-pink-200">理解和共情</strong>。
-                                        <br />
-                                        用<strong className="text-pink-200">温暖的方式</strong>给我力量和方向。
+                                        {t('feelingDesc')}
                                     </p>
                                     <div className="flex flex-wrap gap-2">
-                                        <span className="px-2 py-1 text-xs bg-pink-900/50 text-pink-300 rounded-full">情感共鸣</span>
-                                        <span className="px-2 py-1 text-xs bg-pink-900/50 text-pink-300 rounded-full">温柔治愈</span>
-                                        <span className="px-2 py-1 text-xs bg-pink-900/50 text-pink-300 rounded-full">心灵支持</span>
+                                        <span className="px-2 py-1 text-xs bg-pink-900/50 text-pink-300 rounded-full">{t('emotionalResonance')}</span>
+                                        <span className="px-2 py-1 text-xs bg-pink-900/50 text-pink-300 rounded-full">{t('gentleSupport')}</span>
+                                        <span className="px-2 py-1 text-xs bg-pink-900/50 text-pink-300 rounded-full">{t('innerClarity')}</span>
                                     </div>
                                     {/* 悬停指示 */}
                                     <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <span className="text-pink-400 text-sm">选择 →</span>
+                                        <span className="text-pink-400 text-sm">{t('choose')} →</span>
                                     </div>
                                 </motion.button>
                             </div>
@@ -140,7 +138,7 @@ export function PersonalitySelector({ onSelect, onStartInterview, existingProfil
                                         className="absolute -top-4 right-0 px-3 py-1.5 bg-white/5 border border-neon-gold/30 rounded-full text-xs text-neon-gold hover:bg-neon-gold/10 hover:border-neon-gold/60 transition-all flex items-center gap-1"
                                     >
                                         <span className="text-sm">👁️</span> 
-                                        我的画像
+                                        {t('myProfile')}
                                     </button>
                                 )}
                                 <motion.h2
@@ -149,7 +147,7 @@ export function PersonalitySelector({ onSelect, onStartInterview, existingProfil
                                     animate={{ y: 0, opacity: 1 }}
                                     transition={{ delay: 0.1 }}
                                 >
-                                    已选择：{selectedType === 'T' ? '🧠 理性思考' : '💖 感性情感'}
+                                    {t('selectedStyle', { style: selectedType === 'T' ? t('thinkingType') : t('feelingType') })}
                                 </motion.h2>
                                 <motion.p
                                     className="text-gray-400 text-sm md:text-base"
@@ -157,7 +155,7 @@ export function PersonalitySelector({ onSelect, onStartInterview, existingProfil
                                     animate={{ y: 0, opacity: 1 }}
                                     transition={{ delay: 0.2 }}
                                 >
-                                    想让 AI 更懂你吗？{existingProfile ? '你已有专属画像，也可以重新测试' : '可以先做一个简短的性格访谈'}
+                                    {t('profileQuestion')} {existingProfile ? t('profileExisting') : t('profileNew')}
                                 </motion.p>
                             </div>
 
@@ -174,16 +172,16 @@ export function PersonalitySelector({ onSelect, onStartInterview, existingProfil
                                 >
                                     <div className="flex items-center gap-3 mb-3">
                                         <span className="text-3xl">🔮</span>
-                                        <h3 className="text-lg font-bold text-starlight">直接占卜</h3>
+                                        <h3 className="text-lg font-bold text-starlight">{t('directReading')}</h3>
                                     </div>
                                     <p className="text-sm text-gray-400 leading-relaxed">
                                         {existingProfile
-                                            ? '使用已有画像，直接进入提问和抽牌环节'
-                                            : '跳过访谈，直接进入提问和抽牌环节'
+                                            ? t('directReadingExisting')
+                                            : t('directReadingNew')
                                         }
                                     </p>
                                     <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <span className="text-gray-400 text-sm">继续 →</span>
+                                        <span className="text-gray-400 text-sm">{t('continue')} →</span>
                                     </div>
                                 </motion.button>
 
@@ -201,18 +199,18 @@ export function PersonalitySelector({ onSelect, onStartInterview, existingProfil
                                         <div className="flex items-center gap-3 mb-3">
                                             <span className="text-3xl">{existingProfile ? '🔄' : '🪞'}</span>
                                             <div>
-                                                <h3 className="text-lg font-bold text-neon-gold">{existingProfile ? '再测一次' : '人格访谈'}</h3>
-                                                <p className="text-xs text-neon-gold/50">{existingProfile ? '重新生成你的个性画像' : '10 个快速问答'}</p>
+                                                <h3 className="text-lg font-bold text-neon-gold">{existingProfile ? t('retake') : t('interview')}</h3>
+                                                <p className="text-xs text-neon-gold/50">{existingProfile ? t('regenerateProfile') : t('quickQuestions')}</p>
                                             </div>
                                         </div>
                                         <p className="text-sm text-gray-400 leading-relaxed">
                                             {existingProfile
-                                                ? '重新回答 10 个问题，更新你的个性画像'
-                                                : <>用 <strong className="text-neon-gold/80">1 分钟</strong> 回答 10 个问题，AI 将为你生成专属性格画像，让解读更加个性化</>
+                                                ? t('retakeDescription')
+                                                : t('interviewDescription')
                                             }
                                         </p>
                                         <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <span className="text-neon-gold text-sm">开始 →</span>
+                                            <span className="text-neon-gold text-sm">{t('begin')} →</span>
                                         </div>
                                     </motion.button>
                                 )}
@@ -224,7 +222,7 @@ export function PersonalitySelector({ onSelect, onStartInterview, existingProfil
                                     onClick={() => setSelectedType(null)}
                                     className="text-xs text-gray-500 hover:text-gray-400 transition-colors"
                                 >
-                                    ← 重新选择解读风格
+                                    ← {t('reselectStyle')}
                                 </button>
                             </div>
                         </motion.div>

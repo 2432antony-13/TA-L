@@ -3,9 +3,11 @@ import { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   interviewQuestions,
+  interviewQuestionsEn,
   generatePersonalityProfileAsync,
   type InterviewAnswer,
 } from '../data/interviewQuestions'
+import { useLanguage } from '../i18n/LanguageContext'
 
 interface PersonalityInterviewProps {
   onComplete: (profile: string) => void
@@ -13,6 +15,7 @@ interface PersonalityInterviewProps {
 }
 
 export function PersonalityInterview({ onComplete, onSkip }: PersonalityInterviewProps) {
+  const { language, t } = useLanguage()
   const [currentIndex, setCurrentIndex] = useState(0)
   const [answers, setAnswers] = useState<InterviewAnswer[]>([])
   const [isTransitioning, setIsTransitioning] = useState(false)
@@ -49,7 +52,7 @@ export function PersonalityInterview({ onComplete, onSkip }: PersonalityIntervie
           setIsGenerating(true)
           
           try {
-            const profile = await generatePersonalityProfileAsync(newAnswers)
+            const profile = await generatePersonalityProfileAsync(newAnswers, language)
             setProfileText(profile)
           } catch (err) {
              console.error(err)
@@ -61,7 +64,7 @@ export function PersonalityInterview({ onComplete, onSkip }: PersonalityIntervie
         }
       }, 400)
     },
-    [currentIndex, answers, isTransitioning]
+    [currentIndex, answers, isTransitioning, language]
   )
 
   const handleFinish = useCallback(() => {
@@ -89,8 +92,8 @@ export function PersonalityInterview({ onComplete, onSkip }: PersonalityIntervie
           >
             <div className="w-10 h-10 rounded-full border-t-2 border-r-2 border-neon-gold animate-spin mb-6"></div>
             <p className="text-neon-gold animate-pulse text-base tracking-widest text-center">
-              AI 正在深潜你的潜意识<br/>
-              <span className="text-xs text-gray-500 mt-2 block">为您提炼您的画像...</span>
+              {t('generatingProfile')}<br/>
+              <span className="text-xs text-gray-500 mt-2 block">{t('generatingProfileHint')}</span>
             </p>
           </motion.div>
         ) : !showResult ? (
@@ -122,7 +125,9 @@ export function PersonalityInterview({ onComplete, onSkip }: PersonalityIntervie
                 transition={{ duration: 0.3 }}
               >
                 <h3 className="text-lg md:text-xl text-starlight text-center mb-6 md:mb-8 leading-relaxed">
-                  {currentQuestion.question}
+                  {language === 'zh-CN'
+                    ? currentQuestion.question
+                    : interviewQuestionsEn[currentIndex].question}
                 </h3>
 
                 {/* 选项 */}
@@ -140,7 +145,9 @@ export function PersonalityInterview({ onComplete, onSkip }: PersonalityIntervie
                       transition={{ delay: idx * 0.08 }}
                     >
                       <span className="text-sm md:text-base text-gray-300 group-hover:text-starlight transition-colors">
-                        {option.text}
+                        {language === 'zh-CN'
+                          ? option.text
+                          : interviewQuestionsEn[currentIndex].options[idx]}
                       </span>
                     </motion.button>
                   ))}
@@ -154,7 +161,7 @@ export function PersonalityInterview({ onComplete, onSkip }: PersonalityIntervie
                 onClick={onSkip}
                 className="text-xs text-gray-500 hover:text-gray-400 transition-colors"
               >
-                跳过访谈，直接占卜 →
+                {t('skipInterview')} →
               </button>
             </div>
           </>
@@ -176,7 +183,7 @@ export function PersonalityInterview({ onComplete, onSkip }: PersonalityIntervie
             </div>
 
             <h3 className="text-xl md:text-2xl font-bold text-neon-gold text-center mb-6">
-              你的个性画像
+              {t('profileTitle')}
             </h3>
 
             <div className="bg-white/5 border border-neon-gold/20 rounded-xl p-5 mb-6">
@@ -186,7 +193,7 @@ export function PersonalityInterview({ onComplete, onSkip }: PersonalityIntervie
                   return null
                 }
                 if (line.trim() === '') return <div key={i} className="h-3" />
-                if (line.startsWith('综合印象:')) {
+                if (line.startsWith('综合印象:') || line.startsWith('Overall impression:')) {
                   return (
                     <p key={i} className="text-sm text-gray-300 leading-relaxed mt-2 italic">
                       {line}
@@ -220,7 +227,7 @@ export function PersonalityInterview({ onComplete, onSkip }: PersonalityIntervie
             </div>
 
             <p className="text-xs text-gray-500 text-center mb-6">
-              这份画像将融入你的塔罗解读，让 AI 更懂你
+              {t('profileUse')}
             </p>
 
             <motion.button
@@ -229,7 +236,7 @@ export function PersonalityInterview({ onComplete, onSkip }: PersonalityIntervie
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              开始占卜 ✨
+              {t('beginReading')}
             </motion.button>
           </motion.div>
         )}

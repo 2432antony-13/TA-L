@@ -1,6 +1,8 @@
 import { motion, AnimatePresence } from 'framer-motion'
+import { useLanguage } from '../i18n/LanguageContext'
 
 export function GuidanceCharacter() {
+  const { t } = useLanguage()
   return (
     <AnimatePresence>
       <motion.div
@@ -18,7 +20,7 @@ export function GuidanceCharacter() {
           transition={{ duration: 0.3, delay: 0.5 }}
         >
           <p className="text-[10px] md:text-xs leading-relaxed font-bold">
-            请注意个人信息保护，请勿输入他/她的个人信息以及奇奇怪怪的数据），请妥善注意您的使用！
+            {t('privacyNotice')}
           </p>
         </motion.div>
       </motion.div>

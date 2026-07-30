@@ -1,6 +1,7 @@
 // FollowUpChat.tsx — 追问聊天组件（流式版，带重试）
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useLanguage } from '../i18n/LanguageContext'
 
 interface FollowUpMessage {
     role: 'user' | 'assistant'
@@ -18,7 +19,7 @@ interface FollowUpChatProps {
 }
 
 const MAX_FOLLOW_UPS = 3
-const MAX_RETRIES = 3 // 与 useGeminiAPI.ts 保持一致
+const MAX_RETRIES = 3
 
 export function FollowUpChat({
     sessionId,
@@ -28,6 +29,7 @@ export function FollowUpChat({
     initialReading,
     initialSuggestions,
 }: FollowUpChatProps) {
+    const { language, t } = useLanguage()
     const [messages, setMessages] = useState<FollowUpMessage[]>([])
     const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>(initialSuggestions)
     const [inputValue, setInputValue] = useState('')
@@ -37,17 +39,21 @@ export function FollowUpChat({
     const [isExpanded, setIsExpanded] = useState(false)
 
     const messagesRef = useRef(messages)
-    messagesRef.current = messages
     const turnCountRef = useRef(turnCount)
-    turnCountRef.current = turnCount
     const lastFailedQuestionRef = useRef<string | null>(null)
     const abortRef = useRef<AbortController | null>(null)
 
+    useEffect(() => {
+        messagesRef.current = messages
+        turnCountRef.current = turnCount
+    }, [messages, turnCount])
+
     // 构建追问 prompt
     const buildFollowUpPrompt = useCallback((question: string) => {
+        const isChinese = language === 'zh-CN'
+        const positions = [t('past'), t('present'), t('future')]
         const cardDesc = cards.map((c, i) => {
-            const positions = ['过去', '现在', '未来']
-            return `${positions[i]}位：${c.name}（${c.isReversed ? '逆位' : '正位'}）`
+            return `${positions[i]}: ${c.name} (${c.isReversed ? t('reversed') : t('upright')})`
         }).join('\n')
 
         const validMessages = messagesRef.current.filter(m => !m.isError)
@@ -59,13 +65,16 @@ export function FollowUpChat({
         }
 
         const prevContext = prevFollowUps
-            .map((f, i) => `追问${i + 1}：${f.q}\n回答${i + 1}：${f.a}`)
+            .map((f, i) => isChinese
+                ? `追问${i + 1}：${f.q}\n回答${i + 1}：${f.a}`
+                : `Follow-up ${i + 1}: ${f.q}\nAnswer ${i + 1}: ${f.a}`)
             .join('\n\n')
 
         const safeInitialReading = (initialReading || '').substring(0, 300) + '...'
 
-        return `你是一位塔罗牌解读师。
-背景：用户在进行塔罗占卜后发起了追问。
+        if (isChinese) {
+            return `你是一个以塔罗牌为反思媒介的叙事助手，不是预言者。
+用户正在对先前解读发起追问。
 【原始问题】${originalQuestion}
 【牌面】${cardDesc}
 【初始解读摘要】${safeInitialReading}
@@ -73,15 +82,37 @@ ${prevContext ? `【前期追问】\n${prevContext}` : ''}
 
 用户的具体追问：${question}
 
-回答要求（严格限制）：
-1. 深度分析！字数控制在 100-200 字以内。
-2. 直接切入重点，不要寒暄。
-3. 结合牌面给出一个核心洞察，并详细阐述逻辑。
-4. ${turnCountRef.current < 2
+要求：
+1. 100-200 字，直接回应，不寒暄。
+2. 结合用户明确提供的信息和牌面象征，给出一个核心观察及其理由。
+3. 不得把推测当事实，不预测具体结果，不展示内部思维链。
+4. ${personality === 'T' ? '偏重清晰、务实、可执行。' : '承认情绪但不迎合，表达温和而具体。'}
+5. ${turnCountRef.current < 2
                 ? `最后给出 2 个建议追问（JSON格式）：\n\`\`\`json\n{"suggested_questions": ["问题1", "问题2"]}\n\`\`\``
                 : '最后一次追问，无需建议。'}
 `
-    }, [cards, originalQuestion, initialReading])
+        }
+
+        return `You are a reflective narrative assistant using tarot symbolism as a prompt, not a fortune-teller.
+The user is asking a follow-up to an earlier reading.
+Original question: ${originalQuestion}
+Cards:
+${cardDesc}
+Initial reading excerpt: ${safeInitialReading}
+${prevContext ? `Earlier follow-ups:\n${prevContext}` : ''}
+
+User follow-up: ${question}
+
+Requirements:
+1. Respond directly in 90-160 words without an introduction.
+2. Use only supplied information and card symbolism to offer one central observation and its rationale.
+3. Do not present inference as fact, predict a specific result, or reveal hidden chain-of-thought.
+4. ${personality === 'T' ? 'Be clear, practical, and actionable.' : 'Acknowledge emotion without flattering the user; stay warm and specific.'}
+5. ${turnCountRef.current < 2
+                ? `End with two suggested questions in this JSON block:\n\`\`\`json\n{"suggested_questions":["Question 1","Question 2"]}\n\`\`\``
+                : 'This is the final follow-up; do not suggest more questions.'}
+`
+    }, [cards, originalQuestion, initialReading, language, personality, t])
 
     // 保存记录到后端（异步，不阻塞主流程）
     const saveFollowUpToHistory = useCallback(async (question: string, answer: string) => {
@@ -95,12 +126,12 @@ ${prevContext ? `【前期追问】\n${prevContext}` : ''}
                     'Content-Type': 'application/json',
                     'X-Device-Id': deviceId
                 },
-                body: JSON.stringify({ sessionId, question, answer, action: 'save' })
+                body: JSON.stringify({ sessionId, question, answer, action: 'save', language })
             })
         } catch (e) {
             console.error('Failed to save history:', e)
         }
-    }, [sessionId])
+    }, [sessionId, language])
 
     // 取消请求
     const cancelRequest = useCallback(() => {
@@ -136,23 +167,20 @@ ${prevContext ? `【前期追问】\n${prevContext}` : ''}
         const systemPrompt = buildFollowUpPrompt(question)
         let lastError: any = null
 
-        // 重试循环（与 useGeminiAPI.ts 一致）
+        // Retry transient provider failures.
         for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
             try {
                 if (abortController.signal.aborted) break
 
-                const response = await fetch('/api/gemini?fast=1', {
+                const response = await fetch('/api/reading?fast=1', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Device-Id': localStorage.getItem('tarot_device_uuid') || '',
+                    },
                     body: JSON.stringify({
                         contents: [{ role: 'user', parts: [{ text: systemPrompt }] }],
-                        safetySettings: [
-                            { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_LOW_AND_ABOVE' },
-                            { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_LOW_AND_ABOVE' },
-                            { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_LOW_AND_ABOVE' },
-                            { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_LOW_AND_ABOVE' }
-                        ],
-                        generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
+                        language,
                     }),
                     signal: abortController.signal,
                 })
@@ -275,13 +303,13 @@ ${prevContext ? `【前期追问】\n${prevContext}` : ''}
             const newMsgs = [...prev]
             const lastMsg = newMsgs[newMsgs.length - 1]
             if (lastMsg && lastMsg.role === 'assistant' && !lastMsg.content) {
-                return [...prev.slice(0, -1), { role: 'assistant', content: '网络错误，请点击重试。', isError: true }]
+                return [...prev.slice(0, -1), { role: 'assistant', content: t('networkRetry'), isError: true }]
             }
-            return [...prev, { role: 'assistant', content: '网络错误，请点击重试。', isError: true }]
+            return [...prev, { role: 'assistant', content: t('networkRetry'), isError: true }]
         })
         setIsLoading(false)
         abortRef.current = null
-    }, [isLoading, isComplete, buildFollowUpPrompt, saveFollowUpToHistory, cancelRequest, sessionId, originalQuestion, cards, personality, initialReading])
+    }, [isLoading, isComplete, buildFollowUpPrompt, saveFollowUpToHistory, cancelRequest, language, t])
 
     // 重试
     const handleRetry = useCallback(() => {
@@ -311,15 +339,15 @@ ${prevContext ? `【前期追问】\n${prevContext}` : ''}
                     whileTap={{ scale: 0.99 }}
                 >
                     <span>💬</span>
-                    <span>想深入了解？点击开启追问</span>
-                    <span className="text-xs text-gray-500">（最多 {MAX_FOLLOW_UPS} 次）</span>
+                    <span>{t('followUpOpen')}</span>
+                    <span className="text-xs text-gray-500">{t('followUpLimit', { count: MAX_FOLLOW_UPS })}</span>
                 </motion.button>
             ) : (
                 <div className="space-y-4">
                     <div className="flex items-center gap-2 text-sm text-purple-300/80">
                         <span>💬</span>
-                        <span>深度追问</span>
-                        <span className="text-xs text-gray-500">({turnCount}/{MAX_FOLLOW_UPS} 次)</span>
+                        <span>{t('followUpTitle')}</span>
+                        <span className="text-xs text-gray-500">{t('followUpCount', { current: turnCount, max: MAX_FOLLOW_UPS })}</span>
                     </div>
 
                     {/* 消息列表 */}
@@ -338,7 +366,7 @@ ${prevContext ? `【前期追问】\n${prevContext}` : ''}
                                         }`}
                                 >
                                     <span className="text-xs text-gray-500 mb-1 block">
-                                        {msg.role === 'user' ? '你的追问' : msg.isError ? '⚠️ 出了点问题' : '🔮 解读'}
+                                        {msg.role === 'user' ? t('yourFollowUp') : msg.isError ? t('followUpErrorTitle') : t('interpretation')}
                                     </span>
                                     <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
                                     {msg.isError && !isLoading && (
@@ -348,7 +376,7 @@ ${prevContext ? `【前期追问】\n${prevContext}` : ''}
                                             whileHover={{ scale: 1.02 }}
                                             whileTap={{ scale: 0.98 }}
                                         >
-                                            🔄 重试
+                                            {t('retry')}
                                         </motion.button>
                                     )}
                                 </motion.div>
@@ -366,13 +394,13 @@ ${prevContext ? `【前期追问】\n${prevContext}` : ''}
                                         animate={{ opacity: [0.3, 1, 0.3] }}
                                         transition={{ duration: 1.5, repeat: Infinity }}
                                     >
-                                        ✨ 正在解读...
+                                        {t('followUpLoading')}
                                     </motion.span>
                                     <button
                                         onClick={cancelRequest}
                                         className="text-xs px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-gray-300 transition-colors"
                                     >
-                                        取消
+                                        {t('cancel')}
                                     </button>
                                 </div>
                             </motion.div>
@@ -404,7 +432,7 @@ ${prevContext ? `【前期追问】\n${prevContext}` : ''}
                                 value={inputValue}
                                 onChange={(e) => setInputValue(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-                                placeholder="输入你的追问..."
+                                placeholder={t('followUpPlaceholder')}
                                 disabled={isLoading}
                                 className="flex-1 px-4 py-2 text-sm bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors disabled:opacity-50"
                             />
@@ -413,14 +441,14 @@ ${prevContext ? `【前期追问】\n${prevContext}` : ''}
                                 disabled={isLoading || !inputValue.trim()}
                                 className="px-4 py-2 text-sm bg-purple-500/20 border border-purple-500/30 rounded-xl text-purple-200 hover:bg-purple-500/30 transition-all disabled:opacity-50"
                             >
-                                发送
+                                {t('send')}
                             </button>
                         </div>
                     )}
 
                     {isComplete && (
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-sm text-gray-400 py-2">
-                            ✨ 本次占卜的追问已结束，如需继续请开始新的占卜
+                            {t('followUpComplete')}
                         </motion.div>
                     )}
                 </div>

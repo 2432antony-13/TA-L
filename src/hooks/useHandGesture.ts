@@ -83,14 +83,6 @@ export function useHandGesture(videoRef: React.RefObject<HTMLVideoElement | null
 
     // 检测是否只伸出一根手指
     const detectOneFingerPointing = useCallback((landmarks: NormalizedLandmarkList): boolean => {
-        const fingerTips = [8, 12, 16, 20]
-        const fingerBases = [6, 10, 14, 18]
-        let straightFingers = 0
-        for (let i = 0; i < fingerTips.length; i++) {
-            if (landmarks[fingerTips[i]].y < landmarks[fingerBases[i]].y) {
-                straightFingers++
-            }
-        }
         const indexStraight = landmarks[8].y < landmarks[6].y
         const middleBent = landmarks[12].y >= landmarks[10].y
         const ringBent = landmarks[16].y >= landmarks[14].y
@@ -222,6 +214,7 @@ export function useHandGesture(videoRef: React.RefObject<HTMLVideoElement | null
     useEffect(() => {
         if (!isEnabled || !videoRef.current) return
 
+        const videoElement = videoRef.current;
         let stream: MediaStream | null = null;
         let isActive = true;
 
@@ -302,7 +295,7 @@ export function useHandGesture(videoRef: React.RefObject<HTMLVideoElement | null
             isActive = false;
             if (requestRef.current) cancelAnimationFrame(requestRef.current);
             if (stream) stream.getTracks().forEach(track => track.stop());
-            if (videoRef.current) videoRef.current.srcObject = null;
+            videoElement.srcObject = null;
             handsRef.current?.close();
             handsRef.current = null;
             setIsReady(false);

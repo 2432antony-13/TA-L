@@ -6,6 +6,7 @@ import type { TarotCard as TarotCardType } from '../data/tarotCards'
 import { CARD_BACK_IMAGE } from '../data/tarotCards'
 import TarotCard3D from './TarotCard3D'
 import type { HandState } from '../context/GestureContext'
+import { useLanguage } from '../i18n/LanguageContext'
 
 // 运行时尺寸判断（手机端显示 5 张牌）
 const isMobile = () => window.innerWidth < 768
@@ -28,6 +29,7 @@ export function TarotCarousel({
     handState,
     onJumpToCard,
 }: TarotCarouselProps) {
+    const { t } = useLanguage()
     // 连续滚动偏移量（像素）
     const scrollOffset = useMotionValue(0)
     // 优化弹簧参数：提高响应速度以配合高频手势更新
@@ -418,25 +420,25 @@ export function TarotCarousel({
                 <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-sm z-50 pointer-events-none drop-shadow-lg bg-black/50 px-4 py-2 rounded-full">
                     {isSelectMode ? (
                         <span className="text-neon-gold">
-                            ☝️ 选牌模式：悬停 2 秒确认
+                            {t('hoverConfirm')}
                             {hoverProgress > 0 && ` (${Math.round(hoverProgress)}%)`}
                         </span>
                     ) : handState?.isFist ? (
-                        <span className="text-yellow-400">✊ 握拳进入选牌模式</span>
+                        <span className="text-yellow-400">{t('fistToSelect')}</span>
                     ) : handState ? (
                         <div className="flex items-center gap-4 text-gray-300">
                             <span className={handState.scrollDirection === 'left' ? 'text-neon-gold font-bold' : ''}>
-                                ← 向左
+                                ← {t('moveLeft')}
                             </span>
                             <span className="text-gray-500">|</span>
                             <span className={handState.scrollDirection === 'right' ? 'text-neon-gold font-bold' : ''}>
-                                向右 →
+                                {t('moveRight')} →
                             </span>
                             <span className="text-gray-500">|</span>
-                            <span className="text-gray-400">☝️ 食指悬停选牌</span>
+                            <span className="text-gray-400">{t('pointToSelect')}</span>
                         </div>
                     ) : (
-                        <span className="text-gray-400">🖱️ 拖动或滚轮浏览</span>
+                        <span className="text-gray-400">{t('dragToBrowse')}</span>
                     )}
                 </div>
 

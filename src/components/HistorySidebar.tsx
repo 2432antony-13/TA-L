@@ -1,6 +1,8 @@
 // HistorySidebar.tsx — 历史记录侧边栏
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { ChevronDown, History, X } from 'lucide-react'
+import { useLanguage } from '../i18n/LanguageContext'
 
 interface HistoryRecord {
     id: string
@@ -11,6 +13,7 @@ interface HistoryRecord {
     reading: string
     thinking?: string
     followUps?: { q: string; a: string }[]
+    language?: 'zh-CN' | 'en'
 }
 
 interface HistorySidebarProps {
@@ -19,6 +22,7 @@ interface HistorySidebarProps {
 }
 
 export function HistorySidebar({ isOpen, onClose }: HistorySidebarProps) {
+    const { locale, t } = useLanguage()
     const [records, setRecords] = useState<HistoryRecord[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [expandedId, setExpandedId] = useState<string | null>(null)
@@ -48,8 +52,12 @@ export function HistorySidebar({ isOpen, onClose }: HistorySidebarProps) {
     }, [isOpen, fetchHistory])
 
     const formatDate = (ts: number) => {
-        const d = new Date(ts)
-        return `${d.getMonth() + 1}月${d.getDate()}日 ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`
+        return new Intl.DateTimeFormat(locale, {
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+        }).format(new Date(ts))
     }
 
     return (
@@ -76,14 +84,15 @@ export function HistorySidebar({ isOpen, onClose }: HistorySidebarProps) {
                         {/* 头部 */}
                         <div className="flex items-center justify-between p-4 border-b border-white/10">
                             <div className="flex items-center gap-2">
-                                <span className="text-xl">📜</span>
-                                <h2 className="text-lg text-neon-gold font-light">我的占卜记录</h2>
+                                <History size={18} />
+                                <h2 className="text-lg text-neon-gold font-light">{t('historyTitle')}</h2>
                             </div>
                             <button
                                 onClick={onClose}
                                 className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 text-gray-400 transition-colors"
+                                aria-label={t('cancel')}
                             >
-                                ✕
+                                <X size={16} />
                             </button>
                         </div>
 
@@ -95,14 +104,14 @@ export function HistorySidebar({ isOpen, onClose }: HistorySidebarProps) {
                                         animate={{ opacity: [0.3, 1, 0.3] }}
                                         transition={{ duration: 1.5, repeat: Infinity }}
                                     >
-                                        ✨ 加载中...
+                                        {t('historyLoading')}
                                     </motion.span>
                                 </div>
                             ) : records.length === 0 ? (
                                 <div className="text-center text-gray-500 py-8">
                                     <p className="text-2xl mb-2">🔮</p>
-                                    <p>暂无占卜记录</p>
-                                    <p className="text-xs mt-1">完成一次占卜后，记录会自动保存在这里</p>
+                                    <p>{t('noHistory')}</p>
+                                    <p className="text-xs mt-1">{t('noHistoryHint')}</p>
                                 </div>
                             ) : (
                                 records.map((record) => (
@@ -122,13 +131,13 @@ export function HistorySidebar({ isOpen, onClose }: HistorySidebarProps) {
                                                     <div className="flex items-center gap-2 mt-1">
                                                         <span className="text-xs text-gray-500">{formatDate(record.timestamp)}</span>
                                                         <span className="text-xs px-1.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300">
-                                                            {record.personality === 'T' ? '理性' : '感性'}
+                                                            {record.personality === 'T' ? t('rational') : t('empathetic')}
                                                         </span>
                                                     </div>
                                                     <div className="flex gap-1 mt-2">
                                                         {record.cards?.map((card, i) => (
                                                             <span key={i} className="text-xs px-2 py-0.5 bg-neon-gold/10 text-neon-gold/70 rounded-full truncate max-w-[100px]">
-                                                                {card.name}{card.isReversed ? '逆' : ''}
+                                                                {card.name}{card.isReversed ? ` · ${t('reversedShort')}` : ''}
                                                             </span>
                                                         ))}
                                                     </div>
@@ -137,7 +146,7 @@ export function HistorySidebar({ isOpen, onClose }: HistorySidebarProps) {
                                                     animate={{ rotate: expandedId === record.id ? 180 : 0 }}
                                                     className="text-gray-500 text-sm mt-1 flex-shrink-0"
                                                 >
-                                                    ▼
+                                                    <ChevronDown size={16} />
                                                 </motion.span>
                                             </div>
                                         </button>
@@ -158,7 +167,7 @@ export function HistorySidebar({ isOpen, onClose }: HistorySidebarProps) {
                                                     {/* 追问记录 */}
                                                     {record.followUps && record.followUps.length > 0 && (
                                                         <div className="px-4 pb-4 space-y-4 border-t border-white/5 pt-4">
-                                                            <p className="text-xs text-purple-300/70 font-bold">—— 深度追问 ——</p>
+                                                            <p className="text-xs text-purple-300/70 font-bold">{t('followUpHistory')}</p>
                                                             {record.followUps.map((fu, i) => (
                                                                 <div key={i} className="text-xs space-y-2">
                                                                     <p className="text-purple-200/90 font-medium">Q: {fu.q}</p>
@@ -177,7 +186,7 @@ export function HistorySidebar({ isOpen, onClose }: HistorySidebarProps) {
 
                         {/* 底部 */}
                         <div className="p-4 border-t border-white/10 text-center">
-                            <p className="text-xs text-gray-500">记录保存在本设备，最多保留 50 条</p>
+                            <p className="text-xs text-gray-500">{t('historyStorage')}</p>
                         </div>
                     </motion.div>
                 </>

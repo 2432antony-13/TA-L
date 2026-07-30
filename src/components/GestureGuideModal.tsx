@@ -1,5 +1,6 @@
 // GestureGuideModal.tsx - 手势操作指引弹窗
 import { motion, AnimatePresence } from 'framer-motion'
+import { useLanguage } from '../i18n/LanguageContext'
 
 interface GestureGuideModalProps {
     isOpen: boolean
@@ -7,6 +8,7 @@ interface GestureGuideModalProps {
 }
 
 export function GestureGuideModal({ isOpen, onClose }: GestureGuideModalProps) {
+    const { t } = useLanguage()
     return (
         <AnimatePresence>
             {isOpen && (
@@ -33,10 +35,10 @@ export function GestureGuideModal({ isOpen, onClose }: GestureGuideModalProps) {
 
                         <div className="relative z-10">
                             <h2 className="text-2xl font-bold text-center text-neon-gold mb-2">
-                                👋 手势控制指引
+                                {t('gestureGuide')}
                             </h2>
                             <p className="text-center text-gray-400 text-sm mb-8">
-                                像魔法师一样，隔空掌控命运的牌阵
+                                {t('gestureGuideHint')}
                             </p>
 
                             <div className="space-y-6 mb-8">
@@ -46,9 +48,9 @@ export function GestureGuideModal({ isOpen, onClose }: GestureGuideModalProps) {
                                         ✋
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-bold text-white mb-1">浏览 (Browse)</h3>
+                                        <h3 className="text-lg font-bold text-white mb-1">{t('browse')}</h3>
                                         <p className="text-gray-400 text-sm">
-                                            在摄像头范围内，<span className="text-neon-gold font-medium">手掌张开</span>放在<span className="text-neon-gold">右边向右滑牌</span>，<span className="text-neon-gold">左边向左滑牌</span>～
+                                            {t('browseGuide')}
                                         </p>
                                     </div>
                                 </div>
@@ -59,9 +61,9 @@ export function GestureGuideModal({ isOpen, onClose }: GestureGuideModalProps) {
                                         ☝️
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-bold text-white mb-1">选牌 (Select)</h3>
+                                        <h3 className="text-lg font-bold text-white mb-1">{t('selectCard')}</h3>
                                         <p className="text-gray-400 text-sm">
-                                            想选中那张牌？<span className="text-neon-gold font-medium">竖起食指</span>，出现光标即可选牌！悬停 2 秒确认。
+                                            {t('selectGuide')}
                                         </p>
                                     </div>
                                 </div>
@@ -72,9 +74,9 @@ export function GestureGuideModal({ isOpen, onClose }: GestureGuideModalProps) {
                                         ✊
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-bold text-white mb-1">握拳返回 (Fist)</h3>
+                                        <h3 className="text-lg font-bold text-white mb-1">{t('fist')}</h3>
                                         <p className="text-gray-400 text-sm">
-                                            <span className="text-neon-gold font-medium">握紧拳头</span>回到选牌模式继续抽牌，一共三张牌！
+                                            {t('fistGuide')}
                                         </p>
                                     </div>
                                 </div>
@@ -82,7 +84,7 @@ export function GestureGuideModal({ isOpen, onClose }: GestureGuideModalProps) {
                                 {/* 4. 洗牌 (底部小字) */}
                                 <div className="text-center">
                                     <p className="text-xs text-gray-500">
-                                        💡 提示：在输入阶段<span className="text-gray-300">双手张开 👐</span> 可触发自动洗牌
+                                        {t('shuffleTip')}
                                     </p>
                                 </div>
                             </div>
@@ -91,7 +93,7 @@ export function GestureGuideModal({ isOpen, onClose }: GestureGuideModalProps) {
                                 onClick={onClose}
                                 className="w-full py-3.5 bg-gradient-to-r from-neon-gold-dim to-neon-gold text-black font-bold text-lg rounded-xl hover:shadow-neon hover:scale-[1.02] active:scale-[0.98] transition-all"
                             >
-                                我学会了 ✨
+                                {t('gotIt')}
                             </button>
                         </div>
                     </motion.div>

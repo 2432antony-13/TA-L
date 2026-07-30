@@ -1,12 +1,14 @@
 // QuestionInput.tsx - 问题输入组件
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useLanguage } from '../i18n/LanguageContext'
 
 interface QuestionInputProps {
     onSubmit: (question: string) => void
 }
 
 export function QuestionInput({ onSubmit }: QuestionInputProps) {
+    const { t } = useLanguage()
     const [question, setQuestion] = useState('')
     const [limitError, setLimitError] = useState('')
 
@@ -23,7 +25,7 @@ export function QuestionInput({ onSubmit }: QuestionInputProps) {
             }
 
             if (usage.count >= 20) {
-                setLimitError(`今日占卜次数已达星空上限 (${usage.count}/20) ✨ 请明日再来探索吧`)
+                setLimitError(t('dailyLimit', { count: usage.count }))
                 return
             }
 
@@ -56,7 +58,7 @@ export function QuestionInput({ onSubmit }: QuestionInputProps) {
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ delay: 0.2 }}
                     >
-                        ✨ 在心中默念您的问题 ✨
+                        {t('questionTitle')}
                     </motion.h2>
                     <motion.p
                         className="text-gray-400 text-sm md:text-base"
@@ -64,10 +66,10 @@ export function QuestionInput({ onSubmit }: QuestionInputProps) {
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ delay: 0.3 }}
                     >
-                        西西塔罗给你的生活加点料
+                        {t('questionSubtitle')}
                         <br />
                         <span className="text-xs text-gray-500 italic mt-2 block opacity-70">
-                            *备注：问题详细，它解读得越贴近，也越能让你感知到“真实感”
+                            {t('questionHint')}
                         </span>
                     </motion.p>
                 </div>
@@ -85,7 +87,7 @@ export function QuestionInput({ onSubmit }: QuestionInputProps) {
                                 setQuestion(e.target.value)
                                 if (limitError) setLimitError('') // 重新输入时清除错误提升体验
                             }}
-                            placeholder="例如：我的事业发展方向是什么？我和TA的关系会如何发展？"
+                            placeholder={t('questionPlaceholder')}
                             className="w-full h-40 px-6 py-4 bg-mystic-dark/80 border border-white/10 rounded-2xl text-starlight placeholder-gray-500 resize-none focus:outline-none focus:border-neon-gold/50 focus:ring-2 focus:ring-neon-gold/30 transition-all text-base pointer-events-auto"
                             autoFocus
                         />
@@ -118,7 +120,7 @@ export function QuestionInput({ onSubmit }: QuestionInputProps) {
                         transition={{ delay: 0.5 }}
                         whileHover={{ boxShadow: '0 0 30px rgba(255, 215, 0, 0.5)' }}
                     >
-                        下一步：洗牌 🃏
+                        {t('nextShuffle')}
                     </motion.button>
 
                 </form>

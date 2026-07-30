@@ -2,12 +2,13 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import type { DrawnCard } from '../data/tarotCards'
 import { FollowUpChat } from './FollowUpChat'
+import { useLanguage } from '../i18n/LanguageContext'
+import { getCardName } from '../i18n/tarotTranslations'
 
 interface ReadingLayoutProps {
     cards: DrawnCard[]
     question: string
     reading: string | null
-    thinking?: string
     isLoading: boolean
     isStreaming?: boolean
     sessionId: string | null
@@ -21,7 +22,6 @@ export function ReadingLayout({
     cards,
     question,
     reading,
-    thinking,
     isLoading,
     isStreaming,
     sessionId,
@@ -30,8 +30,9 @@ export function ReadingLayout({
     onQuestionSubmit,
     onReset,
 }: ReadingLayoutProps) {
+    const { language, t } = useLanguage()
     const hasReading = reading !== null && reading.length > 0
-    const hasThinking = thinking && thinking.length > 0
+    const positions = [t('past'), t('present'), t('future')]
 
     return (
         <motion.div
@@ -70,7 +71,7 @@ export function ReadingLayout({
                                 >
                                     {/* 位置标签 */}
                                     <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs text-neon-gold/70 whitespace-nowrap">
-                                        {['过去', '现在', '未来'][index]}
+                                        {positions[index]}
                                     </div>
 
                                     {/* 卡片 */}
@@ -82,7 +83,7 @@ export function ReadingLayout({
                                     >
                                         <img
                                             src={drawnCard.card.image}
-                                            alt={drawnCard.card.name}
+                                            alt={getCardName(drawnCard.card, language)}
                                             className={`w-full h-full object-contain ${drawnCard.isReversed ? 'rotate-180' : ''}`}
                                         />
                                     </div>
@@ -90,10 +91,10 @@ export function ReadingLayout({
                                     {/* 卡片名称 */}
                                     <div className="mt-3 text-center">
                                         <p className="text-sm font-medium text-starlight">
-                                            {drawnCard.card.name}
+                                            {getCardName(drawnCard.card, language)}
                                         </p>
                                         <p className="text-xs text-gray-400">
-                                            {drawnCard.isReversed ? '逆位' : '正位'}
+                                            {drawnCard.isReversed ? t('reversed') : t('upright')}
                                         </p>
                                     </div>
                                 </motion.div>
@@ -102,7 +103,7 @@ export function ReadingLayout({
 
                         {/* 问题展示 */}
                         <div className="text-center border-t border-white/10 pt-6 w-full">
-                            <p className="text-sm text-gray-400 mb-2">您的问题：</p>
+                            <p className="text-sm text-gray-400 mb-2">{t('yourQuestion')}</p>
                             <p className="text-starlight italic text-lg">"{question}"</p>
                         </div>
                     </div>
@@ -130,7 +131,7 @@ export function ReadingLayout({
                                 >
                                     {/* 位置标签 */}
                                     <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs text-neon-gold/70 whitespace-nowrap">
-                                        {['过去', '现在', '未来'][index]}
+                                        {positions[index]}
                                     </div>
 
                                     {/* 卡片 */}
@@ -142,7 +143,7 @@ export function ReadingLayout({
                                     >
                                         <img
                                             src={drawnCard.card.image}
-                                            alt={drawnCard.card.name}
+                                            alt={getCardName(drawnCard.card, language)}
                                             className={`w-full h-full object-contain ${drawnCard.isReversed ? 'rotate-180' : ''}`}
                                         />
                                     </div>
@@ -150,10 +151,10 @@ export function ReadingLayout({
                                     {/* 卡片名称 */}
                                     <div className="mt-3 text-center">
                                         <p className="text-sm font-medium text-starlight">
-                                            {drawnCard.card.name}
+                                            {getCardName(drawnCard.card, language)}
                                         </p>
                                         <p className="text-xs text-gray-400">
-                                            {drawnCard.isReversed ? '逆位' : '正位'}
+                                            {drawnCard.isReversed ? t('reversed') : t('upright')}
                                         </p>
                                     </div>
                                 </motion.div>
@@ -162,7 +163,7 @@ export function ReadingLayout({
 
                         {/* 问题展示 */}
                         <div className="text-center border-t border-white/10 pt-6 w-full">
-                            <p className="text-sm text-gray-400 mb-2">您的问题：</p>
+                            <p className="text-sm text-gray-400 mb-2">{t('yourQuestion')}</p>
                             <p className="text-starlight italic text-lg">"{question}"</p>
                         </div>
 
@@ -184,10 +185,10 @@ export function ReadingLayout({
                                     >
                                         ✨
                                     </motion.span>
-                                    解读中...
+                                    {t('interpreting')}
                                 </span>
                             ) : (
-                                '🔮 开始解读'
+                                t('beginInterpretation')
                             )}
                         </motion.button>
                     </div>
@@ -209,28 +210,9 @@ export function ReadingLayout({
                             <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
                                 <span className="text-2xl">🔮</span>
                                 <h2 className="text-xl text-neon-gold font-light tracking-wide">
-                                    命运的指引
+                                    {t('guidanceTitle')}
                                 </h2>
                             </div>
-
-                            {/* 思考过程展示 (AI Thinking) */}
-                            {hasThinking && (
-                                <motion.div
-                                    initial={{ opacity: 0, height: 0 }}
-                                    animate={{ opacity: 1, height: 'auto' }}
-                                    className="mb-8 overflow-hidden"
-                                >
-                                    <div className="bg-black/30 rounded-lg p-4 border border-neon-gold/20 text-xs text-gray-500 font-mono">
-                                        <p className="mb-2 flex items-center gap-2 text-neon-gold/70">
-                                            <span className="animate-pulse">🧠</span>
-                                            深度思考中...
-                                        </p>
-                                        <p className="whitespace-pre-wrap leading-tight opacity-80">
-                                            {thinking}
-                                        </p>
-                                    </div>
-                                </motion.div>
-                            )}
 
                             {/* 解读内容 */}
                             <motion.div
@@ -259,7 +241,10 @@ export function ReadingLayout({
                                 <FollowUpChat
                                     sessionId={sessionId}
                                     originalQuestion={question}
-                                    cards={cards.map(dc => ({ name: dc.card.name, isReversed: dc.isReversed }))}
+                                    cards={cards.map(dc => ({
+                                        name: getCardName(dc.card, language),
+                                        isReversed: dc.isReversed,
+                                    }))}
                                     personality={personality}
                                     initialReading={reading || ''}
                                     initialSuggestions={suggestedQuestions}
@@ -277,7 +262,7 @@ export function ReadingLayout({
                                     onClick={onReset}
                                     className="w-full py-3 border border-neon-gold/50 text-neon-gold rounded-xl hover:bg-neon-gold/10 transition-all duration-300"
                                 >
-                                    🔄 重新占卜
+                                    {t('restart')}
                                 </button>
                             </motion.div>
                         </div>

@@ -2,8 +2,10 @@
 import { useEffect, useRef } from 'react'
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { useGesture } from '../context/GestureContext'
+import { useLanguage } from '../i18n/LanguageContext'
 
 export function HandCursor() {
+    const { t } = useLanguage()
     const { handState, isEnabled, isReady } = useGesture()
     const lastUpdateRef = useRef<number>(0)
 
@@ -78,11 +80,11 @@ export function HandCursor() {
                         color: isPointing ? '#FFD700' : isFist ? '#FF6464' : 'white'
                     }}
                 >
-                    {isPointing && '☝️ 悬停选牌中...'}
-                    {isFist && '✊ 暂停/返回'}
-                    {!isPointing && !isFist && scrollDirection === 'left' && '⬅️ 向左滑动'}
-                    {!isPointing && !isFist && scrollDirection === 'right' && '➡️ 向右滑动'}
-                    {!isPointing && !isFist && scrollDirection === 'center' && '☝️ 食指选牌'}
+                    {isPointing && t('hoverSelect')}
+                    {isFist && t('pauseReturn')}
+                    {!isPointing && !isFist && scrollDirection === 'left' && t('swipeLeft')}
+                    {!isPointing && !isFist && scrollDirection === 'right' && t('swipeRight')}
+                    {!isPointing && !isFist && scrollDirection === 'center' && t('pointSelect')}
                 </motion.div>
             </motion.div>
         </AnimatePresence>

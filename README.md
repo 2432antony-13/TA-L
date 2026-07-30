@@ -1,97 +1,62 @@
-# 🔮 MysticGesticTarot
+# TA-L
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Vibecoding](https://img.shields.io/badge/Developed%20Via-Vibecoding-blueviolet.svg)](#)
-[![Tech Stack: React & TS](https://img.shields.io/badge/Stack-React%20%7C%20TypeScript%20%7C%20Tailwind-blue.svg)](#)
+[简体中文](README.md) | [English](README.en.md)
 
-> An immersive, gesture-controlled interactive Tarot experience that bridges ancient cultural heritage with modern web technologies, built entirely through "Vibecoding" (LLM-assisted programming) by a liberal arts student in a cross-cultural context.
+TA-L 是一个支持手势交互与 AI 叙事解读的双语塔罗 Web 应用。它将牌面作为自我观察的媒介，不把模型生成内容包装成事实认定或未来保证。
 
----
+[在线体验](https://www.taro24.fun) · [问题反馈](https://github.com/2432antony-13/TA-L/issues)
 
-## 🎯 OSS Vision & Mission
+## 功能
 
-**MysticGesticTarot** is not just an interactive divination tool; it is an open-source movement aimed at **Diversity in Tech**. 
+- 简体中文与英文一键切换，牌名、牌义、访谈、解读和追问完整双语化
+- MediaPipe 浏览器端手势识别，摄像头画面不上传服务器
+- DeepSeek V4 Pro 流式解读，支持理性与共情两种回应风格
+- 三牌阵、人格沟通偏好、连续追问与设备级历史记录
+- 响应式界面，支持键盘、鼠标、触控和手势操作
 
-Currently, the open-source community is overwhelmingly populated by traditional computer science professionals. This project demonstrates how humanities scholars can utilize natural language programming ("Vibecoding") to build robust, culturally rich, and innovative applications. 
+## AI 设计
 
-By open-sourcing our core architecture, gesture-recognition workflow, and AI generative prompts, we serve as a **micro-architecture blueprint for non-technical creators** who wish to integrate natural interactive interfaces into their creative projects.
+正式解读默认使用 `deepseek-v4-pro`，开启 thinking 并使用 `high` 推理强度；快速画像和追问关闭 thinking 以降低延迟。模型的 `reasoning_content` 仅在服务端消费，不传给浏览器，也不写入历史记录。
 
----
+提示词要求模型区分用户提供的事实、牌面象征与条件性解释，并禁止把推测表述为事实。应用内容仅供娱乐、反思与灵感启发，不构成心理、医疗、法律或财务建议。
 
-## ✨ Core Features
-
-1. **Immersive Natural Interaction**: A custom Vision Engine allows users to draw and interact with cards via hand gestures, simulating the tactile connection to fate.
-2. **Classic Heritage, Modern Aesthetics**: Incorporates the classic 1909 Rider-Waite tarot imagery, enhanced through AI upscaling and CSS filter layers for a visually stunning UI.
-3. **Privacy-First Architecture**: We believe mystic experiences should be intimate. All camera inputs and initial gesture processing are handled **100% locally** in the browser ensuring zero visual data upload.
-4. **Cultural Bridge**: Designed and maintained by a Korean international student in a Chinese academic context, emphasizing cross-cultural understanding of western mysticism.
-
----
-
-## 🏗️ Modular Architecture
-
-```text
-┌─────────────────────────────────────────────────────────┐
-│                    Frontend UI                          │
-│     (Gesture Feedback / Tarot Rendering / CSS Canvas)   │
-└─────────────────────────────────────────────────────────┘
-                            ↑
-┌─────────────────────────────────────────────────────────┐
-│                   Vision Engine                         │
-│     (Local Camera Capture / Hand Tracking / Analytics)  │
-└─────────────────────────────────────────────────────────┘
-                            ↓
-┌─────────────────────────────────────────────────────────┐
-│                     Backend / AI Core                   │
-│      (Generative Interpretations / Logic Controller)    │
-└─────────────────────────────────────────────────────────┘
-```
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js (v18+)
-- npm or pnpm
-
-### Installation
+## 本地运行
 
 ```bash
-# 1. Clone the repository
 git clone https://github.com/2432antony-13/TA-L.git
-
-# 2. Navigate to project directory
 cd TA-L
-
-# 3. Install dependencies
-npm install
-
-# 4. Start the development server
+npm ci
+cp .env.example .env.local
 npm run dev
+```
 
-# 5. Build for production
+在 `.env.local` 中填写 `DEEPSEEK_API_KEY`，然后访问 `http://localhost:5176`。
+
+```bash
+npm run lint
 npm run build
 ```
 
----
+## Vercel 部署
 
-## 🤝 Contributing (The Vibecoding Way)
+导入本仓库后，至少配置：
 
-We strongly encourage contributions from students in the **Humanities, Arts, and Social Sciences**. You do not need to be a senior software engineer to contribute.
+| 环境变量 | 必需 | 默认值或说明 |
+| --- | --- | --- |
+| `DEEPSEEK_API_KEY` | 是 | DeepSeek API 密钥，仅放在服务端 |
+| `DEEPSEEK_MODEL` | 否 | `deepseek-v4-pro` |
+| `DEEPSEEK_BASE_URL` | 否 | `https://api.deepseek.com` |
+| `DEEPSEEK_REASONING_EFFORT` | 否 | `high` |
+| `UPSTASH_REDIS_REST_URL` | 历史功能 | Upstash Redis REST URL |
+| `UPSTASH_REDIS_REST_TOKEN` | 历史功能 | Upstash Redis REST Token |
+| `ALLOWED_ORIGIN` | 否 | 额外允许的来源，逗号分隔 |
 
-If you are using tools like Claude, Cursor, or ChatGPT to write code via natural language (Vibecoding), your pull requests are warmly welcomed! 
+兼容旧 Vercel KV 的 `KV_REST_API_URL` 与 `KV_REST_API_TOKEN`。不要创建 `VITE_DEEPSEEK_API_KEY`，否则密钥可能进入前端构建产物。
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingCultureFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingCultureFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingCultureFeature`)
-5. Open a Pull Request
+## 技术栈
 
----
+React 19、TypeScript、Vite、Tailwind CSS、Framer Motion、MediaPipe Hands、DeepSeek API、Upstash Redis、Vercel。
 
-## 📜 License
+## 许可
 
-Distributed under the MIT License. See `LICENSE` for more information.
-
-> *"We are made of star-stuff. We are a way for the cosmos to know itself."* - Inspired by the Fool's Journey.
+代码采用 [MIT License](LICENSE)。提交代码或素材前，请确认你拥有相应权利并保留必要署名。

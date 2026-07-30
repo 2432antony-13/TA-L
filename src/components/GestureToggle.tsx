@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useGesture } from '../context/GestureContext'
 import { GestureGuideModal } from './GestureGuideModal'
+import { useLanguage } from '../i18n/LanguageContext'
 
 const isSecureContext = () => {
     if (typeof window === 'undefined') return false
@@ -16,6 +17,7 @@ interface GestureToggleProps {
 }
 
 export function GestureToggle({ currentPhase }: GestureToggleProps = {}) {
+    const { t } = useLanguage()
     const { isEnabled, isReady, error, toggleGesture, videoRef } = useGesture()
     const canUseCamera = isSecureContext()
     const [showGuide, setShowGuide] = useState(false)
@@ -101,14 +103,14 @@ export function GestureToggle({ currentPhase }: GestureToggleProps = {}) {
                                 transition={{ duration: 1, repeat: Infinity }}
                             />
                             <span className="text-xs text-white/80 font-medium">
-                                {isReady ? '手势追踪中' : '摄像头加载中...'}
+                                {isReady ? t('tracking') : t('cameraLoading')}
                             </span>
                         </div>
 
                         {/* 桌面端才显示拖动提示 */}
                         {!isMobileView && (
                             <div className="absolute bottom-1 right-2 pointer-events-none text-[10px] text-white/30">
-                                按住拖动
+                                {t('drag')}
                             </div>
                         )}
 
@@ -130,7 +132,7 @@ export function GestureToggle({ currentPhase }: GestureToggleProps = {}) {
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.8, y: 10 }}
                         onClick={() => setShowGuide(true)}
-                        title="查看手势教程"
+                        title={t('gestureHelp')}
                     >
                         ?
                     </motion.button>
@@ -148,9 +150,9 @@ export function GestureToggle({ currentPhase }: GestureToggleProps = {}) {
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: 20 }}
                         >
-                            <p className="text-xs text-yellow-400 mb-1">⚠️ 摄像头需要安全连接</p>
+                            <p className="text-xs text-yellow-400 mb-1">{t('secureCamera')}</p>
                             <p className="text-xs text-gray-400">
-                                请使用 <span className="text-neon-gold">localhost:5176</span> 访问
+                                {t('secureCameraHint')}
                             </p>
                         </motion.div>
                     )}
@@ -200,7 +202,7 @@ export function GestureToggle({ currentPhase }: GestureToggleProps = {}) {
                                     👆
                                 </motion.span>
                                 <span className="text-sm text-white font-medium">
-                                    试试<span className="text-neon-gold">手势模式</span>！
+                                    {t('tryGesture')}
                                 </span>
                                 <motion.span
                                     className="text-neon-gold"
