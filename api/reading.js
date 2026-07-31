@@ -151,7 +151,7 @@ export default async function handler(req) {
         const geminiKey = process.env.GEMINI_API_KEY
 
         if (deepSeekKey && deepSeekKey !== 'your_deepseek_api_key_here') {
-            const model = process.env.DEEPSEEK_MODEL || 'deepseek-v4-pro'
+            const model = process.env.DEEPSEEK_MODEL || process.env.VITE_DEEPSEEK_MODEL || 'deepseek-v4-flash'
             const baseUrl = (process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com').replace(/\/$/, '')
             const prompt = extractPrompt(body)
             const messages = Array.isArray(prompt) ? prompt : [{ role: 'user', content: prompt }]

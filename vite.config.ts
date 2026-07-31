@@ -89,7 +89,7 @@ function localReadingApi(env: Record<string, string>): PluginOption {
         try {
           const body = await readBody(req)
           const isFast = req.url.includes('fast=1')
-          const model = env.DEEPSEEK_MODEL || 'deepseek-v4-pro'
+          const model = env.DEEPSEEK_MODEL || env.VITE_DEEPSEEK_MODEL || 'deepseek-v4-flash'
           const baseUrl = (env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com').replace(/\/$/, '')
           const providerResponse = await fetch(`${baseUrl}/chat/completions`, {
             method: 'POST',
