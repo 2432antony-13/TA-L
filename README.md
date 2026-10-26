@@ -56,3 +56,7 @@ React 19、TypeScript、Vite、Tailwind CSS、Framer Motion、MediaPipe Hands、
 ## 许可
 
 代码采用 [MIT License](LICENSE)。提交代码或素材前，请确认你拥有相应权利并保留必要署名。
+
+## 项目管理
+
+[项目章程](PROJECT.md) · [协作规则](AGENTS.md) · [工作流](docs/WORKFLOW.md) · [基线](docs/governance/BASELINE.md) · [验收](docs/governance/QUALITY.md) · [资产](docs/governance/ASSETS.md) · [交接](docs/governance/HANDOVER.md)
