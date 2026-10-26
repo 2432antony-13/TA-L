@@ -1,0 +1,27 @@
+name: 项目任务
+description: 一个用户结果、明确验收与证据
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 用户问题与证据
+      description: 谁遇到什么问题，现有版本和依据是什么？
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 范围与验收
+      description: 给定输入、执行动作、期望结果、失败情况和交付渠道。
+    validations:
+      required: true
+  - type: textarea
+    id: ownership
+    attributes:
+      label: 负责人、依赖与资源
+      description: 使用 Assignees 指定负责人；写明阻塞、解除动作及实际资源限制。
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 变更、检查与交付
+      description: 关联 PR、完整 SHA、运行结果和渠道。未运行与失败分别记录。
