@@ -18,9 +18,9 @@ New readings and interviews request the selected language. History, user input a
 
 ## 标识 / Identity
 
-用户选择 B「24 印记」，结合 Q 版 Tony：无眼镜、柔和五官、深色中分短发、笑脸、挥手、左移避让的 24 角标和 Tony 署名。依据参考图提炼为偏男性／中性的 Q 版概念角色，不是照片复刻。每仓有独立配色与项目徽章。
+用户选择 B「24 印记」，结合 Q 版 Tony：无眼镜、柔和五官、深色韩式三七侧分短发、笑脸、挥手、左移避让的 24 角标和 Tony 署名。依据参考图提炼为偏男性／中性的 Q 版概念角色，不是照片复刻。每仓有独立配色与项目徽章。
 
-The selected “24 seal” combines an original chibi Tony character, soft facial features, no glasses, short dark centre-parted hair, a wave, a left-shifted 24 corner mark and a Tony signature. The character is masculine/androgynous. Each project has its own colour and badge.
+The selected “24 seal” combines an original chibi Tony character, soft facial features, no glasses, short dark hair with a Korean-style 30/70 side part, a wave, a left-shifted 24 corner mark and a Tony signature. The character is masculine/androgynous. Each project has its own colour and badge.
 
 - [SVG/CSS](assets/tony.svg) — 网页动画，支持减少动态 / web animation with reduced-motion support.
 - [静态 SVG / Static SVG](assets/tony-static.svg).
