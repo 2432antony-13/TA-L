@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-label="Tony 24 — TA-L"><style>.head{animation:nod 4.8s ease-in-out infinite;transform-origin:96px 122px}.eye{animation:blink 4.8s infinite;transform-box:fill-box;transform-origin:center}.wave{animation:wave 4.8s ease-in-out infinite;transform-origin:140px 133px}.seal{animation:ink 4.8s ease-in-out infinite}@keyframes nod{0%,55%,100%{transform:translateY(0) rotate(-2deg)}25%{transform:translateY(-3px) rotate(2deg)}}@keyframes blink{0%,44%,48%,100%{transform:scaleY(1)}46%{transform:scaleY(.08)}}@keyframes wave{0%,55%,100%{transform:rotate(0)}10%,30%{transform:rotate(14deg)}20%,40%{transform:rotate(-9deg)}}@keyframes ink{0%,100%{opacity:.55}35%,70%{opacity:1}}@media(prefers-reduced-motion:reduce){*{animation:none!important}}</style>
+<rect x="3" y="3" width="186" height="186" rx="38" fill="#152b29"/>
+<rect x="10" y="10" width="172" height="172" rx="31" fill="none" stroke="#bd9af0" stroke-opacity=".22"/>
+<g class="seal" fill="none" stroke="#bd9af0" stroke-width="3" stroke-linecap="round"><path d="M21 53V29q0-8 8-8h24M139 21h24q8 0 8 8v24M21 139v24q0 8 8 8h24M139 171h24q8 0 8-8v-24"/></g>
+<text x="149" y="43" fill="#bd9af0" font-family="Georgia,serif" font-size="21" font-weight="bold">24</text>
+<path d="M53 153v-14q2-23 43-23t43 23v14" fill="#bd9af0"/>
+<path d="M78 120l18 12 18-12-4 34H83z" fill="#faf0d9"/><path d="M87 132l9-6 9 6-9 15z" fill="#203c38"/>
+<path d="M77 120l-9 26 15-4-2 12M115 120l9 26-15-4 2 12" fill="none" stroke="#203c38" stroke-width="3" stroke-linejoin="round"/>
+<g class="wave"><path d="M133 140q15-8 16-26" fill="none" stroke="#bd9af0" stroke-width="14" stroke-linecap="round"/><path d="M148 119q-9-8-7-17 1-4 4 0l2 4-1-18q0-5 3-3l3 15 3-18q1-4 4-1l-1 20 5-14q2-3 4 0l-4 22q-3 12-15 10" fill="#f4cbaa" stroke="#203c38" stroke-width="2.5" stroke-linejoin="round"/></g>
+<g class="head"><ellipse cx="96" cy="77" rx="43" ry="42" fill="#0d1b20"/>
+<ellipse cx="55" cy="89" rx="8" ry="11" fill="#eab792"/><ellipse cx="137" cy="89" rx="8" ry="11" fill="#eab792"/>
+<path d="M57 76q1-33 39-33t39 33v15q0 35-39 35T57 91z" fill="#f4d1af"/>
+<path d="M54 80q-8-29 10-41 14-15 37-12l-4 5q27-3 39 19 8 13 3 34l-11-19q-11 1-22-13-13 18-42 17l-8 18z" fill="#17262a"/>
+<path d="M66 47q21-16 44-7M65 57q15-3 24-12" fill="none" stroke="#394b4c" stroke-width="4" stroke-linecap="round"/>
+<g fill="none" stroke="#243a39" stroke-width="2.8"><rect x="62" y="78" width="29" height="24" rx="9"/><rect x="101" y="78" width="29" height="24" rx="9"/><path d="M91 87q5-4 10 0M57 84h5m68 0h5"/></g>
+<g class="eye" fill="#172a2b"><ellipse cx="79" cy="89" rx="3.3" ry="5"/><ellipse cx="112" cy="89" rx="3.3" ry="5"/></g>
+<g fill="#dd977e" opacity=".7"><ellipse cx="67" cy="102" rx="6" ry="3"/><ellipse cx="124" cy="102" rx="6" ry="3"/></g>
+<path d="M94 94l-2 8h5" fill="none" stroke="#d9a17f" stroke-width="2" stroke-linecap="round"/>
+<path d="M85 109q11 12 22-1" fill="#fff6e7" stroke="#965e4f" stroke-width="2.5" stroke-linecap="round"/></g>
+<rect x="46" y="145" width="96" height="34" rx="15" fill="#152b29"/>
+<text x="96" y="170" text-anchor="middle" fill="#fff2db" font-family="Georgia,serif" font-style="italic" font-weight="bold" font-size="29" letter-spacing="-1.5">Tony</text>
+<path d="M67 176q28 5 61-4" fill="none" stroke="#bd9af0" stroke-width="2" stroke-linecap="round"/>
+<circle cx="33" cy="134" r="21" fill="#bd9af0" stroke="#152b29" stroke-width="4"/>
+<path d="M15 2l3.5 9.5L28 15l-9.5 3.5L15 28l-3.5-9.5L2 15l9.5-3.5z" transform="translate(21 122) scale(.8)" fill="none" stroke="#173632" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

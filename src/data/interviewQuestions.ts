@@ -1,3 +1,5 @@
+import { readAnswerStream } from '../utils/answerStream.js'
+import { traditional } from '../i18n/traditional'
 // interviewQuestions.ts - 通用人格访谈问题数据 + 画像生成
 // 问题来源：docs/mbti_social_interview_templates.md（通用化版本）
 
@@ -342,12 +344,12 @@ function getDefaultImpression(socialLabel: string, emotionLabel: string, driveLa
 
 export async function generatePersonalityProfileAsync(
   answers: InterviewAnswer[],
-  language: 'zh-CN' | 'en' = 'zh-CN',
+  language: 'zh-CN' | 'zh-TW' | 'en' = 'zh-CN',
   onChunk?: (text: string) => void
 ): Promise<string> {
-  const isChinese = language === 'zh-CN'
+  const isChinese = language !== 'en'
   const fallbackProfile = isChinese
-    ? generatePersonalityProfile(answers)
+    ? (language === 'zh-TW' ? traditional(generatePersonalityProfile(answers)) : generatePersonalityProfile(answers))
     : generateEnglishPersonalityProfile(answers)
 
   // 构建传给 Gemini 的 prompt
@@ -368,7 +370,7 @@ export async function generatePersonalityProfileAsync(
 
 ${qaDetails}
 
-不要输出推理过程，也不要把结果说成心理诊断或客观事实。直接生成一份沟通偏好画像：
+不要输出推理过程，也不要把结果说成心理诊断或客观事实。请使用${language === 'zh-TW' ? '繁體中文' : '简体中文'}直接生成一份沟通偏好画像：
 
 [个性画像]
 社交倾向: [四字词语] — [一句话解释（15字以内）]
@@ -415,32 +417,10 @@ Overall impression: [60-90 words grounded in the selected answers, respectful an
 
     if (!response.body) throw new Error('No body')
     
-    // 我们只需要非流式的完整文本，这里简单把流合并
-    const reader = response.body.getReader()
-    const decoder = new TextDecoder()
     let text = ''
-    while (true) {
-      const { done, value } = await reader.read()
-      if (done) break
-      const chunk = decoder.decode(value, { stream: true })
-      const lines = chunk.split('\n')
-      for (const line of lines) {
-        if (line.startsWith('data: ')) {
-          const jsonStr = line.slice(6).trim()
-          if (jsonStr === '[DONE]' || !jsonStr) continue
-          try {
-            const data = JSON.parse(jsonStr)
-            const part = data.candidates?.[0]?.content?.parts?.[0]?.text
-            if (part) {
-              text += part
-              if (onChunk) onChunk(part)
-            }
-          } catch { /* ignore malformed provider event */ }
-        }
-      }
-    }
+    await readAnswerStream(response.body.getReader(), part => { text += part; onChunk?.(part) })
 
-    if (text.trim().length > 50 && text.includes(isChinese ? '综合印象' : 'Overall impression')) {
+    if (text.trim().length > 50 && text.includes(isChinese ? (language === 'zh-TW' ? '綜合印象' : '综合印象') : 'Overall impression')) {
       return text.trim()
     }
     console.warn('Profile output used an unexpected format; using the local fallback.')

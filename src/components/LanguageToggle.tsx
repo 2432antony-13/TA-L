@@ -4,7 +4,8 @@ import { useLanguage, type Language } from '../i18n/LanguageContext'
 export function LanguageToggle() {
   const { language, setLanguage, t } = useLanguage()
   const options: { value: Language; label: string }[] = [
-    { value: 'zh-CN', label: '中文' },
+    { value: 'zh-CN', label: '简' },
+    { value: 'zh-TW', label: '繁' },
     { value: 'en', label: 'EN' },
   ]
 
@@ -25,6 +26,7 @@ export function LanguageToggle() {
               : 'text-gray-300 hover:bg-white/10 hover:text-white'
           }`}
           aria-pressed={language === option.value}
+          aria-label={{ 'zh-CN': '简体中文', 'zh-TW': '繁體中文', en: 'English' }[option.value]}
         >
           {option.label}
         </button>

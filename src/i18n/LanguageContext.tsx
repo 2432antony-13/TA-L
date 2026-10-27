@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 
-export type Language = 'zh-CN' | 'en'
+export type Language = 'zh-CN' | 'zh-TW' | 'en'
 
 const zh = {
   language: '语言',
@@ -276,7 +276,143 @@ const en: Record<TranslationKey, string> = {
   dragToBrowse: 'Drag or scroll to browse',
 }
 
-const dictionaries = { 'zh-CN': zh, en }
+const tw = {
+  language: '語言',
+  chinese: '簡體中文',
+  english: 'English',
+  appTitle: '塔羅敘事',
+  appSubtitle: 'The Mystic Narrative',
+  idlePrompt: '在心中默唸你的問題，然後開始探索',
+  startReading: '開始占卜',
+  spaceToStart: '或按空格鍵開始',
+  luckyNumber: '幸運數字',
+  confirm: '確定',
+  remainingCards: '還需抽取 {count} 張牌',
+  lastCard: '這是最後一張牌，確認後開始解讀',
+  disclaimer: '本應用內容由 AI 生成，僅供娛樂、反思與靈感啟發，不構成心理諮詢、醫療、法律或財務建議。',
+  history: '我的記錄',
+  historyTitle: '我的占卜記錄',
+  apiFailed: 'AI 請求失敗：{message}\n請檢查網路或 Vercel 環境變數。',
+  unknownError: '未知錯誤',
+  privacyNotice: '請勿輸入可識別你或他人的敏感個人資訊。攝像頭畫面僅在瀏覽器本地處理。',
+  questionTitle: '在心中默唸你的問題',
+  questionSubtitle: '讓牌面成為一次自我觀察的入口',
+  questionHint: '問題越具體，解讀越能聚焦於你的真實處境。',
+  questionPlaceholder: '例如：我該如何看待目前的職業選擇？',
+  dailyLimit: '今日體驗次數已達上限（{count}/20），請明日再來。',
+  nextShuffle: '下一步：洗牌',
+  selectStyle: '選擇你的解讀風格',
+  selectStyleHint: '你更偏向理性分析，還是感性共情？',
+  thinkingType: 'T 型 · 理性思考',
+  thinkingDesc: '我偏好客觀、直接的分析，並希望得到清晰可行的行動建議。',
+  feelingType: 'F 型 · 感性共情',
+  feelingDesc: '我希望回應能理解情緒，並以溫和但不空泛的方式提供方向。',
+  logicAnalysis: '邏輯分析',
+  directAdvice: '直接建議',
+  actionOriented: '行動導向',
+  emotionalResonance: '情感共鳴',
+  gentleSupport: '溫和支援',
+  innerClarity: '內在澄清',
+  choose: '選擇',
+  selectedStyle: '已選擇：{style}',
+  profileQuestion: '想讓 AI 更瞭解你的回應偏好嗎？',
+  profileExisting: '你已有專屬畫像，也可以重新測試。',
+  profileNew: '可以先完成一個簡短的人格訪談。',
+  directReading: '直接占卜',
+  directReadingExisting: '使用已有畫像，直接進入提問與抽牌。',
+  directReadingNew: '跳過訪談，直接進入提問與抽牌。',
+  continue: '繼續',
+  retake: '重新測試',
+  interview: '人格訪談',
+  regenerateProfile: '重新生成你的個性畫像',
+  quickQuestions: '10 個快速問題',
+  retakeDescription: '重新回答 10 個問題並更新畫像。',
+  interviewDescription: '用約 1 分鐘回答 10 個問題，AI 將據此調整解讀風格。',
+  begin: '開始',
+  reselectStyle: '重新選擇解讀風格',
+  myProfile: '我的畫像',
+  generatingProfile: 'AI 正在整理你的回答',
+  generatingProfileHint: '正在生成個性畫像…',
+  skipInterview: '跳過訪談，直接占卜',
+  profileTitle: '你的個性畫像',
+  profileUse: '這份畫像會作為語言與關注重點的參考。',
+  beginReading: '開始占卜',
+  past: '過去',
+  present: '現在',
+  future: '未來',
+  upright: '正位',
+  reversed: '逆位',
+  yourQuestion: '你的問題：',
+  interpreting: '正在解讀…',
+  beginInterpretation: '開始解讀',
+  guidanceTitle: '牌面的敘事',
+  preparingGuidance: 'DeepSeek 正在組織解讀…',
+  restart: '重新占卜',
+  exploreAgain: '確認這張牌',
+  fistReturn: '握拳確認',
+  drawnCount: '已抽 {count}/3 張',
+  followUpOpen: '想繼續探索？開啟追問',
+  followUpLimit: '最多 {count} 次',
+  followUpTitle: '深度追問',
+  followUpCount: '{current}/{max} 次',
+  yourFollowUp: '你的追問',
+  followUpErrorTitle: '請求未完成',
+  interpretation: '解讀',
+  retry: '重試',
+  followUpLoading: '正在回應…',
+  cancel: '取消',
+  followUpPlaceholder: '輸入你的追問…',
+  send: '傳送',
+  followUpComplete: '本次追問已結束。如需繼續，請開始新的占卜。',
+  networkRetry: '網路錯誤，請重試。',
+  historyLoading: '載入中…',
+  noHistory: '暫無占卜記錄',
+  noHistoryHint: '完成一次占卜後，記錄會顯示在這裡。',
+  rational: '理性',
+  empathetic: '共情',
+  reversedShort: '逆',
+  followUpHistory: '深度追問',
+  historyStorage: '記錄按裝置標識儲存，最多保留 50 條。',
+  videoLoading: '影片載入中…',
+  videoError: '影片載入失敗',
+  videoErrorHint: '你可以跳過指引並繼續體驗。',
+  soundOn: '開啟聲音',
+  mute: '靜音',
+  skipGuide: '跳過指引',
+  gestureGuide: '手勢控制指引',
+  gestureGuideHint: '用手勢瀏覽和選擇牌面',
+  browse: '瀏覽',
+  browseGuide: '張開手掌，在畫面左側或右側移動以瀏覽牌組。',
+  selectCard: '選牌',
+  selectGuide: '伸出食指並懸停約 2 秒，即可選擇當前牌。',
+  fist: '握拳確認',
+  fistGuide: '握拳約 1 秒確認當前牌並繼續。',
+  shuffleTip: '輸入階段張開雙手可觸發洗牌。',
+  gotIt: '知道了',
+  tracking: '手勢追蹤中',
+  cameraLoading: '攝像頭載入中…',
+  drag: '按住拖動',
+  gestureHelp: '檢視手勢教程',
+  secureCamera: '攝像頭需要 HTTPS 或 localhost',
+  secureCameraHint: '請透過安全連線訪問。',
+  tryGesture: '試試手勢模式',
+  hoverSelect: '懸停選牌中…',
+  pauseReturn: '暫停/返回',
+  swipeLeft: '向左滑動',
+  swipeRight: '向右滑動',
+  pointSelect: '食指選牌',
+  cardsScattering: '牌面正在散開…',
+  energyGathering: '正在重組牌陣…',
+  shuffleComplete: '洗牌完成',
+  hoverConfirm: '選牌模式：懸停 2 秒確認',
+  fistToSelect: '握拳進入選牌模式',
+  moveLeft: '向左',
+  moveRight: '向右',
+  pointToSelect: '食指懸停選牌',
+  dragToBrowse: '拖動或滾輪瀏覽',
+} as const
+
+const dictionaries = { 'zh-CN': zh, 'zh-TW': tw, en }
 
 interface LanguageContextValue {
   language: Language
@@ -288,9 +424,15 @@ interface LanguageContextValue {
 const LanguageContext = createContext<LanguageContextValue | null>(null)
 
 function detectLanguage(): Language {
-  const stored = localStorage.getItem('ta-l-language')
-  if (stored === 'zh-CN' || stored === 'en') return stored
-  return navigator.language.toLowerCase().startsWith('zh') ? 'zh-CN' : 'en'
+  try {
+    const requested = new URLSearchParams(location.search).get('lang')
+    if (requested === 'zh-CN' || requested === 'zh-TW' || requested === 'en') return requested
+    const stored = localStorage.getItem('ta-l-language')
+    if (stored === 'zh-CN' || stored === 'zh-TW' || stored === 'en') return stored
+  } catch { /* Storage can be unavailable in private browsing. */ }
+  const preferred = navigator.language.toLowerCase()
+  if (/^zh-(tw|hk|mo|hant)/.test(preferred)) return 'zh-TW'
+  return preferred.startsWith('zh') ? 'zh-CN' : 'en'
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
@@ -298,7 +440,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   const setLanguage = useCallback((nextLanguage: Language) => {
     setLanguageState(nextLanguage)
-    localStorage.setItem('ta-l-language', nextLanguage)
+    try { localStorage.setItem('ta-l-language', nextLanguage) } catch { /* Session-only preference. */ }
+    const url = new URL(location.href); url.searchParams.set('lang', nextLanguage); history.replaceState(null, '', url)
   }, [])
 
   const t = useCallback((key: TranslationKey, variables: Record<string, string | number> = {}) => {
@@ -310,12 +453,12 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     document.documentElement.lang = language
-    document.title = language === 'zh-CN' ? 'TA-L｜AI 塔罗叙事' : 'TA-L | AI Tarot Narrative'
+    document.title = { 'zh-CN': 'TA-L｜AI 塔罗叙事', 'zh-TW': 'TA-L｜AI 塔羅敘事', en: 'TA-L | AI Tarot Narrative' }[language]
   }, [language])
 
   const value = useMemo(() => ({
     language,
-    locale: language === 'zh-CN' ? 'zh-CN' : 'en-US',
+    locale: language === 'en' ? 'en-US' : language,
     setLanguage,
     t,
   }), [language, setLanguage, t])
