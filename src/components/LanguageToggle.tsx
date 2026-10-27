@@ -11,7 +11,7 @@ export function LanguageToggle() {
 
   return (
     <div
-      className="fixed top-4 right-4 z-[90] flex items-center gap-1 rounded-lg border border-white/15 bg-black/65 p-1 shadow-lg backdrop-blur-md"
+      className="fixed top-4 right-4 z-[160] flex items-center gap-1 rounded-lg border border-white/15 bg-black/65 p-1 shadow-lg backdrop-blur-md"
       aria-label={t('language')}
     >
       <Languages size={15} className="mx-1 text-neon-gold" aria-hidden="true" />

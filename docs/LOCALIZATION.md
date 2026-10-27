@@ -18,13 +18,13 @@ New readings and interviews request the selected language. History, user input a
 
 ## 标识 / Identity
 
-用户选择 B「24 印记」，结合 Q 版 Tony：圆框眼镜、短发、笑脸、挥手、24 角标和 Tony 署名。概念角色不是照片复刻。每仓有独立配色与项目徽章。
+用户选择 B「24 印记」，结合 Q 版 Tony：无眼镜、柔和五官、深色中分短发、笑脸、挥手、左移避让的 24 角标和 Tony 署名。依据参考图提炼为偏男性／中性的 Q 版概念角色，不是照片复刻。每仓有独立配色与项目徽章。
 
-The selected “24 seal” combines an original chibi Tony character, round glasses, short hair, a wave, a 24 corner mark and a Tony signature. Each project has its own colour and badge.
+The selected “24 seal” combines an original chibi Tony character, soft facial features, no glasses, short dark centre-parted hair, a wave, a left-shifted 24 corner mark and a Tony signature. The character is masculine/androgynous. Each project has its own colour and badge.
 
 - [SVG/CSS](assets/tony.svg) — 网页动画，支持减少动态 / web animation with reduced-motion support.
 - [静态 SVG / Static SVG](assets/tony-static.svg).
-- [GIF](assets/tony.gif) — 32 帧、4.8 秒循环 / 32 frames, 4.8-second loop, rendered from the same CSS animation for GitHub.
+- [GIF](assets/tony.gif) — 32 次采样，去重编码为 28 帧、4.8 秒循环 / 32 samples encoded as 28 frames, 4.8-second loop, rendered from the same CSS animation for GitHub.
 
 法规翻译、模型正确性、外部部署和人工验收分别记录。此文不把本地构建视为生产验收。
 
