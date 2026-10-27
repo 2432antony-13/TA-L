@@ -21,3 +21,7 @@
 采用材料来源：用户提供的 project-governance kit/skill v1.0.0 与 2026-10-25 工作区方案；用户 2026-10-27 授权五个现有仓库实施。此前跨仓复用是建议；未发生的集成不登记为已采用。
 
 本轮 PR 与实际管理交付见 [HANDOVER.md](HANDOVER.md)。专业质量、浏览器使用和线上渠道必须另有证据。
+
+## 平台接入更新（2026-10-27）
+
+上文是治理启动时快照。当前账号已具备 project/workflow，任务状态统一在[私有管理看板](https://github.com/users/2432antony-13/projects/1)的 Status 字段维护，阻塞使用 Blocked / Blocker 字段；Issue 正文保留验收与解除条件。旧 status/blocked 标签停止作为状态源。 本轮 PR 及运行结果在关联任务中记录，私有仓套餐限制与产品验收继续单列。

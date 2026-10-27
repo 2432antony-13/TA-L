@@ -4,7 +4,7 @@
 
 ## 任务
 
-依次为 Backlog → Ready → Doing → Review → Verified → Delivered。一个 Issue 仅一个 `status:` 标签；`blocked` 标签说明无法推进的条件，并在正文给出解除动作。只有实际开始的任务进入 Doing。取消、重复和延期单独说明，不能记为交付。项目阶段见章程，不能用任务状态代替。
+依次为 Backlog → Ready → Doing → Review → Verified → Delivered。任务状态统一在[私有管理看板](https://github.com/users/2432antony-13/projects/1)的 Status 字段维护，阻塞使用 Blocked / Blocker 字段；Issue 正文保留验收与解除条件。旧 status/blocked 标签停止作为状态源。只有实际开始的任务进入 Doing。取消、重复和延期单独说明，不能记为交付。项目阶段见章程，不能用任务状态代替。
 
 ## 变更与检查
 
@@ -21,3 +21,7 @@ README 声明 www.taro24.fun 与 Vercel；本轮尚未验证实际部署提交�
 ## 维护与复用
 
 [资产台账](governance/ASSETS.md) 保存来源、输入输出、消费者和验证范围。共享前先在现有第二个仓库验证，不新增公共库仓库。每轮复盘记录继续、调整或暂缓的依据；未测量时不填写效率提升。
+
+## 新任务进入看板
+
+[私有管理看板](https://github.com/users/2432antony-13/projects/1)是当前状态源。网页任务表单设置了项目关联和默认 Owner；创建者有看板写权限时可自动加入。CLI/API 或外部贡献者创建的 Issue 由 Owner 显式加入看板，并核对 Status、Blocked、Assignees；新任务通常为 Backlog，期限未知保持空。参考 [GitHub 表单规则](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-issue-forms)。

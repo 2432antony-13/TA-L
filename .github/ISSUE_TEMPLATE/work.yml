@@ -1,6 +1,12 @@
 name: 项目任务
 description: 一个用户结果、明确验收与证据
+projects: ["2432antony-13/1"]
+assignees: ["2432antony-13"]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        任务创建后由 Owner 核对私有 Projects 的 Status、Blocked 和 Assignees；CLI/API 创建时需显式关联项目。
   - type: textarea
     id: problem
     attributes:

@@ -26,7 +26,7 @@
 
 ## 唯一事实源
 
-[Issues](https://github.com/2432antony-13/TA-L/issues) 保存任务与验收；PR 保存差异；Actions 保存运行；本仓库保存产品规格、资产与交付证据。跨仓索引在既有私有 workspace-governance。Projects 未接入前以每项 Issue 的唯一 status 标签为状态源；接入后迁移到 Projects，不维护两套手工状态。阻塞使用独立 blocked 标签及正文原因。
+[Issues](https://github.com/2432antony-13/TA-L/issues) 保存任务与验收；PR 保存差异；Actions 保存运行；本仓库保存产品规格、资产与交付证据。跨仓索引在既有私有 workspace-governance。任务状态统一在[私有管理看板](https://github.com/users/2432antony-13/projects/1)的 Status 字段维护，阻塞使用 Blocked / Blocker 字段；Issue 正文保留验收与解除条件。旧 status/blocked 标签停止作为状态源。
 
 ## 采用与复查
 
