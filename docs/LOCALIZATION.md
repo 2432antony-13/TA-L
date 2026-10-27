@@ -24,7 +24,7 @@ The selected “24 seal” combines an original chibi Tony character, round glas
 
 - [SVG/CSS](assets/tony.svg) — 网页动画，支持减少动态 / web animation with reduced-motion support.
 - [静态 SVG / Static SVG](assets/tony-static.svg).
-- [GIF](assets/tony.gif) — 32 帧、4.8 秒循环 / 32 frames, 4.8-second loop, rendered from the same CSS animation for GitHub.
+- [GIF](assets/tony.gif) — 32 次采样，去重编码为 28 帧、4.8 秒循环 / 32 samples encoded as 28 frames, 4.8-second loop, rendered from the same CSS animation for GitHub.
 
 法规翻译、模型正确性、外部部署和人工验收分别记录。此文不把本地构建视为生产验收。
 
