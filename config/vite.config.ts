@@ -138,9 +138,10 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   return {
     plugins: [react(), localReadingApi(env)],
+    css: { postcss: './config' },
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, './src'),
+        '@': path.resolve(__dirname, '../src'),
       },
     },
     server: {

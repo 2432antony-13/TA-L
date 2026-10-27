@@ -73,43 +73,42 @@ function getCorsHeaders(req) {
     }
 }
 
-function transformDeepSeekStream(stream) {
+export function transformDeepSeekStream(stream) {
     const encoder = new TextEncoder()
     const decoder = new TextDecoder()
     let buffer = ''
     let sentDone = false
 
+    function consume(line, controller) {
+        const event = line.trim()
+        if (!event || sentDone) return
+        if (event === 'data: [DONE]') {
+            controller.enqueue(encoder.encode('data: [DONE]\n\n'))
+            sentDone = true
+            return
+        }
+        if (!event.startsWith('data:')) return
+        try {
+            const data = JSON.parse(event.slice(5).trimStart())
+            // Never forward private reasoning; only the answer content is public.
+            const text = data.choices?.[0]?.delta?.content
+            if (!text) return
+            const payload = { candidates: [{ content: { parts: [{ text }] } }] }
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`))
+        } catch {
+            // Ignore keep-alive and malformed provider events.
+        }
+    }
     return stream.pipeThrough(new TransformStream({
         transform(chunk, controller) {
             buffer += decoder.decode(chunk, { stream: true })
             const lines = buffer.split('\n')
             buffer = lines.pop() || ''
-
-            for (const line of lines) {
-                const event = line.trim()
-                if (!event) continue
-                if (event === 'data: [DONE]') {
-                    controller.enqueue(encoder.encode('data: [DONE]\n\n'))
-                    sentDone = true
-                    continue
-                }
-                if (!event.startsWith('data: ')) continue
-
-                try {
-                    const data = JSON.parse(event.slice(6))
-                    // reasoning_content is intentionally not forwarded to the browser.
-                    const text = data.choices?.[0]?.delta?.content
-                    if (!text) continue
-                    const payload = {
-                        candidates: [{ content: { parts: [{ text }] } }],
-                    }
-                    controller.enqueue(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`))
-                } catch {
-                    // Ignore provider keep-alive or malformed events.
-                }
-            }
+            for (const line of lines) consume(line, controller)
         },
         flush(controller) {
+            buffer += decoder.decode()
+            if (buffer.trim()) consume(buffer, controller)
             if (!sentDone) controller.enqueue(encoder.encode('data: [DONE]\n\n'))
         },
     }))
