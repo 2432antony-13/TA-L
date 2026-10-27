@@ -2,21 +2,27 @@
 <rect x="3" y="3" width="186" height="186" rx="38" fill="#152b29"/>
 <rect x="10" y="10" width="172" height="172" rx="31" fill="none" stroke="#bd9af0" stroke-opacity=".22"/>
 <g class="seal" fill="none" stroke="#bd9af0" stroke-width="3" stroke-linecap="round"><path d="M21 53V29q0-8 8-8h24M139 21h24q8 0 8 8v24M21 139v24q0 8 8 8h24M139 171h24q8 0 8-8v-24"/></g>
-<text x="149" y="43" fill="#bd9af0" font-family="Georgia,serif" font-size="21" font-weight="bold">24</text>
+<text x="136" y="43" fill="#bd9af0" font-family="Georgia,serif" font-size="20" font-weight="bold">24</text>
 <path d="M53 153v-14q2-23 43-23t43 23v14" fill="#bd9af0"/>
 <path d="M78 120l18 12 18-12-4 34H83z" fill="#faf0d9"/><path d="M87 132l9-6 9 6-9 15z" fill="#203c38"/>
 <path d="M77 120l-9 26 15-4-2 12M115 120l9 26-15-4 2 12" fill="none" stroke="#203c38" stroke-width="3" stroke-linejoin="round"/>
 <g class="wave"><path d="M133 140q15-8 16-26" fill="none" stroke="#bd9af0" stroke-width="14" stroke-linecap="round"/><path d="M148 119q-9-8-7-17 1-4 4 0l2 4-1-18q0-5 3-3l3 15 3-18q1-4 4-1l-1 20 5-14q2-3 4 0l-4 22q-3 12-15 10" fill="#f4cbaa" stroke="#203c38" stroke-width="2.5" stroke-linejoin="round"/></g>
-<g class="head"><ellipse cx="96" cy="77" rx="43" ry="42" fill="#0d1b20"/>
-<ellipse cx="55" cy="89" rx="8" ry="11" fill="#eab792"/><ellipse cx="137" cy="89" rx="8" ry="11" fill="#eab792"/>
-<path d="M57 76q1-33 39-33t39 33v15q0 35-39 35T57 91z" fill="#f4d1af"/>
-<path d="M54 80q-8-29 10-41 14-15 37-12l-4 5q27-3 39 19 8 13 3 34l-11-19q-11 1-22-13-13 18-42 17l-8 18z" fill="#17262a"/>
-<path d="M66 47q21-16 44-7M65 57q15-3 24-12" fill="none" stroke="#394b4c" stroke-width="4" stroke-linecap="round"/>
-<g fill="none" stroke="#243a39" stroke-width="2.8"><rect x="62" y="78" width="29" height="24" rx="9"/><rect x="101" y="78" width="29" height="24" rx="9"/><path d="M91 87q5-4 10 0M57 84h5m68 0h5"/></g>
-<g class="eye" fill="#172a2b"><ellipse cx="79" cy="89" rx="3.3" ry="5"/><ellipse cx="112" cy="89" rx="3.3" ry="5"/></g>
-<g fill="#dd977e" opacity=".7"><ellipse cx="67" cy="102" rx="6" ry="3"/><ellipse cx="124" cy="102" rx="6" ry="3"/></g>
-<path d="M94 94l-2 8h5" fill="none" stroke="#d9a17f" stroke-width="2" stroke-linecap="round"/>
-<path d="M85 109q11 12 22-1" fill="#fff6e7" stroke="#965e4f" stroke-width="2.5" stroke-linecap="round"/></g>
+<g class="head"><ellipse cx="96" cy="77" rx="42" ry="42" fill="#171f23"/>
+<ellipse cx="55" cy="91" rx="7" ry="10" fill="#e9bd9b"/><ellipse cx="137" cy="91" rx="7" ry="10" fill="#e9bd9b"/>
+<path d="M57 73q2-31 39-31t39 31v19q-2 24-23 32-16 7-32 0-21-8-23-32z" fill="#f5d5b7"/>
+<path d="M55 86q-10-29 5-45 11-16 31-15l6 3q22-8 37 12 13 18 4 45l-8-8q-2-23-24-35-4 15-16 24 3-12 1-21-10 21-27 28l-5 15z" fill="#1e2529"/>
+<path d="M96 34q-18-4-29 15M96 37q-8 15-22 24M103 34q18 2 26 17M106 42q12 6 17 17" fill="none" stroke="#45504f" stroke-width="3" stroke-linecap="round" opacity=".75"/>
+<path d="M65 78q9-5 19-1M106 77q10-4 19 1" fill="none" stroke="#463930" stroke-width="2.8" stroke-linecap="round"/>
+<g class="eye">
+<path d="M64 90q12-15 24 0-12 14-24 0M104 90q12-15 24 0-12 14-24 0" fill="#fff9ed"/>
+<ellipse cx="77" cy="89" rx="6.5" ry="8" fill="#6f4d37"/><ellipse cx="115" cy="89" rx="6.5" ry="8" fill="#6f4d37"/>
+<ellipse cx="78" cy="90" rx="3.8" ry="5.5" fill="#23302c"/><ellipse cx="116" cy="90" rx="3.8" ry="5.5" fill="#23302c"/>
+<circle cx="75" cy="86" r="2.2" fill="#fff"/><circle cx="113" cy="86" r="2.2" fill="#fff"/>
+<path d="M64 90q12-15 24 0M104 90q12-15 24 0" fill="none" stroke="#40342d" stroke-width="2.2" stroke-linecap="round"/></g>
+<g fill="#db9c82" opacity=".35"><ellipse cx="66" cy="103" rx="7" ry="3"/><ellipse cx="126" cy="103" rx="7" ry="3"/></g>
+<path d="M95 95l-2 7h5" fill="none" stroke="#d7a681" stroke-width="2" stroke-linecap="round"/>
+<path d="M87 111q9 7 18-1" fill="none" stroke="#996858" stroke-width="2.6" stroke-linecap="round"/>
+</g>
 <rect x="46" y="145" width="96" height="34" rx="15" fill="#152b29"/>
 <text x="96" y="170" text-anchor="middle" fill="#fff2db" font-family="Georgia,serif" font-style="italic" font-weight="bold" font-size="29" letter-spacing="-1.5">Tony</text>
 <path d="M67 176q28 5 61-4" fill="none" stroke="#bd9af0" stroke-width="2" stroke-linecap="round"/>
