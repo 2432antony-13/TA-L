@@ -1,6 +1,6 @@
 # TA-L
 
-[简体中文](README.md) | [English](README.en.md)
+[简体中文](../../README.md) | [English](README.previous.en.md)
 
 TA-L is a bilingual, gesture-controlled tarot web experience with AI narrative interpretation. It treats card symbolism as a prompt for reflection, not as a factual finding or a guarantee about the future.
 
@@ -59,4 +59,4 @@ React 19, TypeScript, Vite, Tailwind CSS, Framer Motion, MediaPipe Hands, DeepSe
 
 ## License
 
-Code is available under the [MIT License](LICENSE). Confirm the rights and attribution requirements for any code or media you contribute.
+Code is available under the [MIT License](../../LICENSE). Confirm the rights and attribution requirements for any code or media you contribute.
