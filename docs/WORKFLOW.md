@@ -8,7 +8,7 @@
 
 ## 变更与检查
 
-沿用 `main` 和短任务分支；PR 说明具体行为/文档变化、关联 Issue、验证对象与未覆盖项。自查记录真实实施者，独立批准人数不虚构。使用 Node 22：`npm ci`、`npm run lint`、`npm run build`。现有 CI 跑 lint 与 TypeScript/Vite 构建；真实模型调用需要单独核对费用范围。没有 npm test 脚本。
+沿用 `main` 和短任务分支；PR 说明具体行为/文档变化、关联 Issue、验证对象与未覆盖项。自查记录真实实施者，独立批准人数不虚构。使用 Node 22：`npm ci`、`npm run lint`、`npm run build`。现有 CI 跑 lint 与 TypeScript/Vite 构建；真实模型调用需要单独核对费用范围。npm test 覆盖流式输出边界。
 
 平台状态与运行见 [基线](governance/BASELINE.md)，产品用例见 [质量矩阵](governance/QUALITY.md)。必要检查应采用实际成功的 job 名，先运行再设置；通过 PR 的约定和平台阻断分别核验。DataTrace 等自动写入主分支的流程须先设计衔接再开启全面 PR 限制。
 

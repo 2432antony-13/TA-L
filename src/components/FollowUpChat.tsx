@@ -50,7 +50,7 @@ export function FollowUpChat({
 
     // 构建追问 prompt
     const buildFollowUpPrompt = useCallback((question: string) => {
-        const isChinese = language === 'zh-CN'
+        const isChinese = language !== 'en'
         const positions = [t('past'), t('present'), t('future')]
         const cardDesc = cards.map((c, i) => {
             return `${positions[i]}: ${c.name} (${c.isReversed ? t('reversed') : t('upright')})`
@@ -74,7 +74,7 @@ export function FollowUpChat({
 
         if (isChinese) {
             return `你是一个以塔罗牌为反思媒介的叙事助手，不是预言者。
-用户正在对先前解读发起追问。
+用户正在对先前解读发起追问。请使用${language === 'zh-TW' ? '繁體中文' : '简体中文'}回应。
 【原始问题】${originalQuestion}
 【牌面】${cardDesc}
 【初始解读摘要】${safeInitialReading}

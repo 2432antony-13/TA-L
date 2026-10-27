@@ -1,3 +1,5 @@
+<p><img src="../assets/tony.gif" width="112" height="112" alt="Tony 24 · TA-L"></p>
+
 [简体中文](../../README.md) · **繁體中文** · [English](../../docs/i18n/README.en.md)
 
 # TA-L
@@ -33,4 +35,6 @@ npm run build
 
 [原始碼](../../src/) · [文件](../../docs/README.md)
 
-目前首頁和使用入口提供三語；各產品介面的語言涵蓋範圍另行記錄，不以文件翻譯代替產品在地化。
+倉庫首頁與產品介面提供 **简体中文 / 繁體中文 / English**。採用 Q 版 **Tony 24** 標識，GitHub 顯示 GIF，產品使用 SVG/CSS 動畫。
+
+[語言覆蓋與原文範圍](../LOCALIZATION.md)

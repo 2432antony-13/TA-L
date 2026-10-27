@@ -1,3 +1,4 @@
+import { traditional } from './traditional'
 import type { TarotCard } from '../data/tarotCards'
 import type { Language } from './LanguageContext'
 
@@ -86,15 +87,16 @@ const englishMeanings: Record<string, MeaningPair> = {
 
 export function getCardName(card: TarotCard, language: Language): string {
   const englishStart = card.name.search(/[A-Za-z]/)
-  if (englishStart < 0) return card.name
+  if (englishStart < 0) return language === 'zh-TW' ? traditional(card.name) : card.name
   return language === 'en'
     ? card.name.slice(englishStart).trim()
-    : card.name.slice(0, englishStart).trim()
+    : language === 'zh-TW' ? traditional(card.name.slice(0, englishStart).trim()) : card.name.slice(0, englishStart).trim()
 }
 
 export function getCardMeaning(card: TarotCard, isReversed: boolean, language: Language): string {
-  if (language === 'zh-CN') {
-    return isReversed ? card.reversedMeaning : card.uprightMeaning
+  if (language !== 'en') {
+    const meaning = isReversed ? card.reversedMeaning : card.uprightMeaning
+    return language === 'zh-TW' ? traditional(meaning) : meaning
   }
   const meanings = englishMeanings[card.id]
   return meanings?.[isReversed ? 1 : 0] ?? (isReversed ? 'Reversed meaning.' : 'Upright meaning.')

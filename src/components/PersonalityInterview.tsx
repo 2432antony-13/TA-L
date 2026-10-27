@@ -1,3 +1,4 @@
+import { traditional } from '../i18n/traditional'
 // PersonalityInterview.tsx - 通用人格访谈组件
 import { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -125,8 +126,8 @@ export function PersonalityInterview({ onComplete, onSkip }: PersonalityIntervie
                 transition={{ duration: 0.3 }}
               >
                 <h3 className="text-lg md:text-xl text-starlight text-center mb-6 md:mb-8 leading-relaxed">
-                  {language === 'zh-CN'
-                    ? currentQuestion.question
+                  {language !== 'en'
+                    ? (language === 'zh-TW' ? traditional(currentQuestion.question) : currentQuestion.question)
                     : interviewQuestionsEn[currentIndex].question}
                 </h3>
 
@@ -145,8 +146,8 @@ export function PersonalityInterview({ onComplete, onSkip }: PersonalityIntervie
                       transition={{ delay: idx * 0.08 }}
                     >
                       <span className="text-sm md:text-base text-gray-300 group-hover:text-starlight transition-colors">
-                        {language === 'zh-CN'
-                          ? option.text
+                        {language !== 'en'
+                          ? (language === 'zh-TW' ? traditional(option.text) : option.text)
                           : interviewQuestionsEn[currentIndex].options[idx]}
                       </span>
                     </motion.button>

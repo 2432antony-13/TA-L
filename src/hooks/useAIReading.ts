@@ -1,3 +1,5 @@
+import { readAnswerStream } from '../utils/answerStream.js'
+import { traditional } from '../i18n/traditional'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Language } from '../i18n/LanguageContext'
 
@@ -61,7 +63,8 @@ export function useAIReading(): UseAIReadingResult {
     const timeout = setTimeout(() => abortControllerRef.current?.abort(), 120_000)
     const prompt = buildTarotPrompt(request)
     const deviceId = deviceIdRef.current
-    const isChinese = request.language === 'zh-CN'
+    const isChinese = request.language !== 'en'
+    const localize = (text: string) => request.language === 'zh-TW' ? traditional(text) : text
     let fullText = ''
     let finalReading = ''
     let lastError: unknown = null
@@ -98,7 +101,7 @@ export function useAIReading(): UseAIReadingResult {
 
         setIsLoading(false)
         setIsStreaming(true)
-        await processAIStream(response.body.getReader(), textDelta => {
+        await readAnswerStream(response.body.getReader(), textDelta => {
           fullText += textDelta
           finalReading = fullText
           setResult({ reading: finalReading, suggestedQuestions: [] })
@@ -125,7 +128,7 @@ export function useAIReading(): UseAIReadingResult {
             const suffix = isChinese
               ? '\n\n> 解读可能不完整，连接已中断。'
               : '\n\n> This reading may be incomplete because the connection ended.'
-            setResult({ reading: finalReading + suffix, suggestedQuestions: [] })
+            setResult({ reading: finalReading + localize(suffix), suggestedQuestions: [] })
           }
           setIsStreaming(false)
           setIsLoading(false)
@@ -134,7 +137,7 @@ export function useAIReading(): UseAIReadingResult {
 
         if (err.message === 'stream-timeout') {
           clearTimeout(timeout)
-          setError(isChinese ? '流式响应超时，请重试。' : 'The streaming response timed out. Please retry.')
+          setError(localize(isChinese ? '流式响应超时，请重试。' : 'The streaming response timed out. Please retry.'))
           setIsStreaming(false)
           setIsLoading(false)
           return null
@@ -149,7 +152,7 @@ export function useAIReading(): UseAIReadingResult {
 
     clearTimeout(timeout)
     const finalError = lastError instanceof Error ? lastError : new Error(isChinese ? '网络请求错误' : 'Network request failed')
-    setError(finalError.message)
+    setError(localize(finalError.message))
     setIsStreaming(false)
     setIsLoading(false)
     throw finalError
@@ -209,41 +212,8 @@ async function saveHistory(
   }
 }
 
-async function processAIStream(
-  reader: ReadableStreamDefaultReader<Uint8Array>,
-  onText: (text: string) => void,
-) {
-  const decoder = new TextDecoder()
-  let buffer = ''
-
-  while (true) {
-    const readPromise = reader.read()
-    const timeoutPromise = new Promise<never>((_, reject) => {
-      setTimeout(() => reject(new Error('stream-timeout')), 30_000)
-    })
-    const { done, value } = await Promise.race([readPromise, timeoutPromise])
-    if (done) break
-
-    buffer += decoder.decode(value, { stream: true })
-    const lines = buffer.split('\n')
-    buffer = lines.pop() || ''
-    for (const line of lines) {
-      if (!line.startsWith('data: ')) continue
-      const jsonText = line.slice(6).trim()
-      if (!jsonText || jsonText === '[DONE]') continue
-      try {
-        const data = JSON.parse(jsonText)
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text
-        if (text) onText(text)
-      } catch {
-        // An incomplete SSE line stays in the buffer; malformed provider events are ignored.
-      }
-    }
-  }
-}
-
 function buildTarotPrompt(request: TarotReadingRequest): string {
-  const isChinese = request.language === 'zh-CN'
+  const isChinese = request.language !== 'en'
   const cards = request.cards
     .map(card => `${card.position}: ${card.name} (${card.isReversed ? (isChinese ? '逆位' : 'reversed') : (isChinese ? '正位' : 'upright')})`)
     .join('\n')
@@ -281,7 +251,7 @@ ${style}
 4. 写“可尝试的行动”，给出 2 至 3 个具体、低风险、可自行判断的建议。
 5. 对未知信息明确使用“如果”“可能”“可以考虑”等条件表达；不得把推测写成事实。
 6. 不预测具体人、事、时间、地点或结果。涉及医疗、心理危机、法律、财务等高风险问题时，提醒寻求合格专业人士。
-7. 不展示内部推理过程、思维链或隐藏分析。正文使用简体中文。
+7. 不展示内部推理过程、思维链或隐藏分析。正文使用${request.language === 'zh-TW' ? '繁體中文' : '简体中文'}。
 
 最后附上两个简短追问，严格使用以下 JSON 代码块格式：
 \`\`\`json

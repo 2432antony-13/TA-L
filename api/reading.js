@@ -131,7 +131,7 @@ export default async function handler(req) {
             return new Response(JSON.stringify({
                 error: {
                     message: isChinese
-                        ? '今日 AI 请求次数已达上限，请明日再试。'
+                        ? (body.language === 'zh-TW' ? '今日 AI 請求次數已達上限，請明日再試。' : '今日 AI 请求次数已达上限，请明日再试。')
                         : 'Today’s AI request limit has been reached. Please return tomorrow.',
                 },
             }), {

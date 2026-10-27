@@ -398,7 +398,7 @@ function AppContent() {
         title={t('historyTitle')}
         aria-label={t('historyTitle')}
       >
-        <History size={18} aria-hidden="true" />
+        <img src="/tony.svg" alt="Tony 24" width="30" height="30" /><History size={18} aria-hidden="true" />
         <span className="hidden sm:inline text-sm font-medium">{t('history')}</span>
       </button>
 
