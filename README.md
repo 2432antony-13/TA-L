@@ -60,3 +60,5 @@ React 19、TypeScript、Vite、Tailwind CSS、Framer Motion、MediaPipe Hands、
 ## 项目管理
 
 [项目章程](PROJECT.md) · [协作规则](AGENTS.md) · [工作流](docs/WORKFLOW.md) · [基线](docs/governance/BASELINE.md) · [验收](docs/governance/QUALITY.md) · [资产](docs/governance/ASSETS.md) · [交接](docs/governance/HANDOVER.md)
+
+当前任务状态与阻塞统一维护在[私有管理看板](https://github.com/users/2432antony-13/projects/1)；各仓 Issue 保存问题、验收与证据。
